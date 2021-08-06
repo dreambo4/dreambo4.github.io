@@ -196,7 +196,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-07 00:52:30" itemprop="dateModified" datetime="2021-08-07T00:52:30+08:00">2021-08-07</time>
+        <time title="修改時間：2021-08-07 00:56:14" itemprop="dateModified" datetime="2021-08-07T00:56:14+08:00">2021-08-07</time>
       </span>
 
   
@@ -211,28 +211,14 @@
     <div class="post-body" itemprop="articleBody">
           <p>DDE(dialogue development environment) Editor [<a target="_blank" rel="noopener" href="https://zenbo.asus.com/developer/documents/overview/DDE-Tutorial/Welcome">官方文件</a>] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。</p>
 <p>以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。</p>
-<p>對了，DDE <strong>建議搭配 Chrome</strong>。使用 Firefox 的話，右側的對話測試區會沒有反應 <del>(被雷到💣)</del></p>
-<h1 id="Dialogflow-比較強大"><a href="#Dialogflow-比較強大" class="headerlink" title="Dialogflow 比較強大"></a>Dialogflow 比較強大</h1><p>舉例來說，Dialogflow 可以做到這樣</p>
-<p>我先在 Entities 定義了台中「區」的名稱<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF_entities.png" alt="DF_entities"></p>
-<p>然後設計對話語句<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF%E6%AF%94%E8%BC%83%E5%BC%B7%E5%A4%A7.png" alt="DF比較強大"></p>
-<h2 id="測試對話"><a href="#測試對話" class="headerlink" title="測試對話"></a>測試對話</h2><p>Dialogflow 應該有支援<strong>模糊比對</strong>句子之類的功能，不然像「我要找長照站」、「哪裡有據點」都沒有很符合前面設計的句子規則。而且句中如果沒提到地點，Dialogflow 可以再補問「你要找哪裡的長照站?」。相較之下，DDE 就要把句子規則定好定滿，沒有符合就不會回覆相應的句子。</p>
-<p><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF1.png" alt="DF1"><br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF2.png" alt="DF2"></p>
-<blockquote>
-<p>“…” 是我還沒把真正的地址加上去，先暫代的，應該是要跟 Fulfillment 串接，但我沒有做完這部份</p>
-</blockquote>
-<h1 id="DDE-工人智慧"><a href="#DDE-工人智慧" class="headerlink" title="DDE 工人智慧"></a>DDE 工人智慧</h1><p>DDE 雖然是 ASUS 做的，但官方文件卻是以英文為主，中文的版本相對沒那麼齊全。然後建議，文件看過最好順手存下來，他們網站不知道在搞什麼，有一陣子上去找資料發現文字都變成亂碼，還好之前有先用 Notion 存起來。</p>
-<p>不過還是有一些優點的，開發遇到問題的時候，寫信給客服信箱，會有他們的工程師回答你，這部分 Dialogflow 應該就無法了。</p>
-<blockquote>
-<p>他也只回我一兩次而已，後面我再接著問的部分，就沒再回了。不過我那時候的主要問題有解決，就不跟他計較啦~</p>
-</blockquote>
-<p>Dialogflow 可以模糊比對句子，DDE 話就沒那麼方便，相關的句子規則都要訂清楚，可能我設計的方式也有問題，反正就變成句子間有可能撞關鍵字。</p>
-<p><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DDE1.png" alt="DDE1"><br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DDE2.png" alt="DDE2"><br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DDE3.png" alt="DDE3"></p>
-<h2 id="和-Zenbo-的搭配"><a href="#和-Zenbo-的搭配" class="headerlink" title="和 Zenbo 的搭配"></a>和 Zenbo 的搭配</h2><p><strong>&lt;&lt;以下是我的經驗，不能保證正確性&gt;&gt;</strong></p>
-<p>和 Zenbo 的配合方面，DDE 還是要比 Dialogflow 好一點。DDE 做好的語料庫，可以發布到伺服器，在 Zenbo 就可以透過官方提供的 APP 來更新/下載語料。這些語料會跟其他原先就存在的語料放在一起，等於是裝在 Zenbo 腦袋裡。Dialogflow 比較像腦袋在雲端上，只把 Zenbo 當作是一個介面，回傳什麼句子給 Zenbo 他就照唸。</p>
-<p>另外，如果要做到「Hey, Zenbo 我要用<code>APP名稱</code>」的話，要到 Zenbo 開發者平台註冊 <a target="_blank" rel="noopener" href="https://zenbo.asus.com/developer/console/">Developer Console</a>。</p>
-<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>最後，如果你沒有真的一定要用 DDE 的話，我會比較建議 Dialogflow。因為 Dialogflow 支援比較多平台，常見的平台都可以串接，如果想裝在 Zenbo 上也可以用 API(不過這部份我沒有實作)，走跟一般 Android 的路線。</p>
-<p>好了，比較完了，那你說我最後是用那一個？我只能說都沒有🤦‍♂️<br>論文中，我的語料庫模型是用 TF-IDF 自己建的，之後有時間再補這部份的文章吧！</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

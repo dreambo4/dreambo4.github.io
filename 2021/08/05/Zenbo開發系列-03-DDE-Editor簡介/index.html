@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="DDE(dialogue development environment) Editor [官方文件] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。 以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。 對了，DDE 建議搭配 Chrome。使用">
+<meta name="description" content="DDE(dialogue development environment) Editor [官方文件] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。 以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[Zenbo開發系列] 03-DDE Editor簡介">
 <meta property="og:url" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
-<meta property="og:description" content="DDE(dialogue development environment) Editor [官方文件] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。 以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。 對了，DDE 建議搭配 Chrome。使用">
+<meta property="og:description" content="DDE(dialogue development environment) Editor [官方文件] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。 以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF_entities.png">
 <meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF%E6%AF%94%E8%BC%83%E5%BC%B7%E5%A4%A7.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DDE2.png">
 <meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DDE3.png">
 <meta property="article:published_time" content="2021-08-05T13:44:20.000Z">
-<meta property="article:modified_time" content="2021-08-06T16:52:30.474Z">
+<meta property="article:modified_time" content="2021-08-06T16:56:14.875Z">
 <meta property="article:author" content="dreambo4">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF_entities.png">
@@ -210,7 +210,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-07 00:52:30" itemprop="dateModified" datetime="2021-08-07T00:52:30+08:00">2021-08-07</time>
+        <time title="修改時間：2021-08-07 00:56:14" itemprop="dateModified" datetime="2021-08-07T00:56:14+08:00">2021-08-07</time>
       </span>
 
   
@@ -225,6 +225,8 @@
     <div class="post-body" itemprop="articleBody">
         <p>DDE(dialogue development environment) Editor [<a target="_blank" rel="noopener" href="https://zenbo.asus.com/developer/documents/overview/DDE-Tutorial/Welcome">官方文件</a>] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。</p>
 <p>以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。</p>
+<span id="more"></span>
+
 <p>對了，DDE <strong>建議搭配 Chrome</strong>。使用 Firefox 的話，右側的對話測試區會沒有反應 <del>(被雷到💣)</del></p>
 <h1 id="Dialogflow-比較強大"><a href="#Dialogflow-比較強大" class="headerlink" title="Dialogflow 比較強大"></a>Dialogflow 比較強大</h1><p>舉例來說，Dialogflow 可以做到這樣</p>
 <p>我先在 Entities 定義了台中「區」的名稱<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor%E7%B0%A1%E4%BB%8B/DF_entities.png" alt="DF_entities"></p>
