@@ -2,6 +2,10 @@
 title: '[Zenbo開發系列] 03-DDE Editor vs Dialogflow'
 date: 2021-08-05 21:44:20
 tags:
+- Zenbo
+- DDE
+- Dialogflow
+- 聊天機器人
 ---
 
 DDE(dialogue development environment) Editor [[官方文件](https://zenbo.asus.com/developer/documents/overview/DDE-Tutorial/Welcome)] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。

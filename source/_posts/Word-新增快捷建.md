@@ -2,6 +2,8 @@
 title: Word 新增快捷建
 date: 2021-05-11 11:04:45
 tags:
+- Word
+- hotkey
 ---
 
 按下 `ctl + alt + 加號`
