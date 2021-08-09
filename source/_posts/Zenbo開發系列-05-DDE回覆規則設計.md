@@ -6,10 +6,13 @@ tags:
 - DDE
 ---
 
+這篇會寫如何設計 DDE 語料庫，還有 DDE 設計的邏輯。
+終於來到第五篇，這次截圖比較多，主要是我如何設定，直接看圖比文字說明清楚。
+
 # 在 ASUS 平台註冊 APP
 有完成這個步驟才能呼叫「嘿，Zenbo，我要用 `App name`」
-首先需要先建立一個 Android 專案，要特別注意 Package name 等下會用到，所以請盡量取個不會跟別人重複的。
 <!--more-->
+首先需要先建立一個 Android 專案，要特別注意 Package name 等下會用到，所以請盡量取個不會跟別人重複的。
 
 > 習慣上 Package name 會用公司會學校或學校的 domian 相反過來。
 > 例如: google.com -> com.google
@@ -63,17 +66,61 @@ tags:
 
 圖中可以看到詞分種 3 種顏色，藍色、橘色、淺橘，代表不同的用意
 
-
-#### 藍色
+- 藍色
 一定要出現的常數，而且一定要相同。像 applyLTC 的第一個例句中"我"，如果輸入的句子中是"你"，就比對不到，一定要是"我"。
-
 可以在這裡建立新的 Concept，或是加入一個原有的 Concept
 ![Intents3](Intents3.png)
 ![Intents4](Intents4.png)
 
-#### 橘色
+- 橘色
 和 Concept 綁定的詞。
 
-#### 淺橘
-和橘色一樣，但是 optional 的，可以不用出現。
+- 淺橘
+和橘色一樣，但是 optional 的，代表輸入的句子中可以有也可以沒有這個詞。
 ![Intents5](Intents5.png)
+
+### Plans
+介紹幾個會用到的欄位:
+- Input Context/Output Contexts: 舉例，如果這個 Plan 的 Input Context 是 "A"，那他會接在其他 Output Context 是 "A" 的 Plan 後面
+- Events: 是指要綁定哪個 Intent
+- Actions
+  - Condition: 可以設定一些條件，例如: 早上/晚上要說什麼? 晴天/雨天要說什麼?
+  - Task Type: Zenbo 要回應什麼內容。如果有多個 Task Type，會照順序唸，而不是隨機挑一個唸哦!
+    - 第二個欄位可以選擇 `Text` 或 `Reference`。Text 直接寫要回覆的內容。Reference 可對應到 TTS ID。
+
+首先，預設的這個 Plan `ThisPlanLaunchingThisApp`，在 Output Context 的地方填 `needAnyHelp`，再讓其他每一個 Plan 的 Input/Output Context 也都填 `needAnyHelp`，對話可以就能像這個流程圖一樣，一直迴圈。
+
+![input_output_contexts](input_output_contexts.jpg)
+> 圓角方形:
+> ```
+> Intent ID/Plan ID
+>   Intent 句子 
+> ```
+
+![Plans1](Plans1.png)
+![Plans2](Plans2.png)
+
+#### Graph
+DDE Editor 提供了方便的視覺化工具，可以查看 Plan 之間的關聯。
+
+![plan_graph](plan_graph.png)
+
+### TTS
+若有會重複使用的句子，可以寫到 TTS 重複利用哦。我只有一個 TTS，給大家參考。
+
+![TTS](TTS.png)
+
+# 發布 DDE
+先 Publish 再 Deploy To Download Server，Zenbo 端才能下載。之後 DDE 還有修改的話，記得要再 Publish 和 Deploy 一次唷。
+
+![publish](publish.png)
+
+# Tests
+基本上，上面的步驟做完就設定好了，接下來測試一下吧!
+右側的 Tests 區，可以測試剛剛設計的流程。要開始這個對話流程，需要使用 UtteranceToLanuchApp Intent 的句子。
+
+所以要先用「我要用靜宜大學長照機器人」，下一句才能用「我要申請長照」。
+選 All domains 或 Specified domains 都可以。
+
+![Test1](Test1.png)
+![Test2](Test2.png)
