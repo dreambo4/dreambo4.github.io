@@ -911,7 +911,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-28 01:39:41" itemprop="dateModified" datetime="2021-08-28T01:39:41+08:00">2021-08-28</time>
+        <time title="修改時間：2021-08-28 02:27:43" itemprop="dateModified" datetime="2021-08-28T02:27:43+08:00">2021-08-28</time>
       </span>
 
   
@@ -932,33 +932,14 @@
 </blockquote>
 <ol>
 <li><p>下載CodeIgniter</p>
-</li>
-<li><p>建資料夾<code>YourProject/swagger/</code></p>
-</li>
-<li><p>下載<a target="_blank" rel="noopener" href="https://github.com/swagger-api/swagger-ui">Swagger UI</a>，解壓縮，將<code>dist/</code>資料夾裡的檔案全搬到<code>YourProject/swagger/</code><br> <img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/dir.png" alt="dir"></p>
-</li>
-<li><p>安裝</p>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require zircote/swagger-php:2.*</span><br></pre></td></tr></table></figure></li>
-<li><p>有需要的話，安裝</p>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require darkaonline/l5-swagger</span><br></pre></td></tr></table></figure></li>
-<li><p>建立Controller(Member)</p>
-</li>
-<li><p>加上一些註解 swg annotation<br>一份專案裡至少需要一個<code>@SWG\Info</code>的註解</p>
- <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这里需要一个主`Swagger`定义：</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@SWG</span>\Swagger(</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Info(</span></span><br><span class="line"><span class="comment"> *         title=&quot;我的`Swagger`API文檔&quot;,</span></span><br><span class="line"><span class="comment"> *         version=&quot;1.0.0&quot;</span></span><br><span class="line"><span class="comment"> *     )</span></span><br><span class="line"><span class="comment"> * )</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure></li>
-<li><p>加上一些方法和註解</p>
- <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@SWG</span>\Post(</span></span><br><span class="line"><span class="comment"> *     path=&quot;/YourProject/index.php/Member/login&quot;,</span></span><br><span class="line"><span class="comment"> *     tags=&#123;&quot;會員功能&quot;&#125;,</span></span><br><span class="line"><span class="comment"> *     summary=&quot;登入&quot;,</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Parameter(</span></span><br><span class="line"><span class="comment"> *         in=&quot;query&quot;,</span></span><br><span class="line"><span class="comment"> *         name=&quot;account&quot;,</span></span><br><span class="line"><span class="comment"> *         type=&quot;string&quot;,</span></span><br><span class="line"><span class="comment"> *         description=&quot;帳號&quot;,</span></span><br><span class="line"><span class="comment"> *         required=true,</span></span><br><span class="line"><span class="comment"> *     ),</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Parameter(</span></span><br><span class="line"><span class="comment"> *         in=&quot;query&quot;,</span></span><br><span class="line"><span class="comment"> *         name=&quot;password&quot;,</span></span><br><span class="line"><span class="comment"> *         type=&quot;string&quot;,</span></span><br><span class="line"><span class="comment"> *         description=&quot;密碼&quot;,</span></span><br><span class="line"><span class="comment"> *         required=true,</span></span><br><span class="line"><span class="comment"> *     ),</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Response(response=&quot;default&quot;, description=&quot;操作成功&quot;)</span></span><br><span class="line"><span class="comment"> * )</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span>   <span class="function"><span class="keyword">function</span>   <span class="title">login</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;&#123;&quot;msg&quot;:&quot;hello world&quot;&#125;&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>下指令生成API 文件檔(json格式)<br>路徑和檔名可以自行調整</p>
-<blockquote>
-<p>php [swagger程式位置] [Controller資料夾(需要掃描的資料夾)] -o [api文件生成位置]</p>
-</blockquote>
- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php /xampp/htdocs/YourProject/vendor/zircote/swagger-php/bin/swagger /xampp/htdocs/YourProject/application/controllers -o \xampp\htdocs\YourProject\api_doc.json</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改<code>YourProject/swagger/index.html</code><br>改成你的api文件位置<br><a target="_blank" rel="noopener" href="http://127.0.0.1/YourProject/api_doc.json">http://127.0.0.1/YourProject/api_doc.json</a><br><img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/edit.png" alt="edit"></p>
-</li>
-<li><p>瀏覽 <a target="_blank" rel="noopener" href="http://127.0.0.1/Swagger_CodeIgniter/swagger/">http://127.0.0.1/Swagger_CodeIgniter/swagger/</a><br><strong>沒更新的話，用無痕瀏覽</strong><br><img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/show.png" alt="show"></p>
-</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
