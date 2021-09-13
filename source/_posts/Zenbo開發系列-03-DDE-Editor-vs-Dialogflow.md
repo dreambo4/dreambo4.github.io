@@ -6,6 +6,7 @@ tags:
 - DDE
 - Dialogflow
 - 聊天機器人
+- 13th鐵人賽
 ---
 
 DDE(dialogue development environment) Editor [[官方文件](https://zenbo.asus.com/developer/documents/overview/DDE-Tutorial/Welcome)] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。
