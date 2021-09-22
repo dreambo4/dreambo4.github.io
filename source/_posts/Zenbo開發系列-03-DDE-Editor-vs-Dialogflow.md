@@ -11,7 +11,7 @@ tags:
 
 DDE(dialogue development environment) Editor [[官方文件](https://zenbo.asus.com/developer/documents/overview/DDE-Tutorial/Welcome)] 是由 ASUS 提供，可以設計自己的回覆規則的工具，製作好之後可以把語料安裝到 Zenbo。
 
-以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較工人智慧一點😂。
+以我有用到的功能來說，Dialogflow 和 DDE 都是 Rule-base 的方式，但我覺得相比 Dialogflow，DDE 就比較「工人智慧」一點😂。
 <!--more-->
 
 對了，DDE **建議搭配 Chrome**。使用 Firefox 的話，右側的對話測試區會沒有反應 ~~(被雷到💣)~~
@@ -54,4 +54,4 @@ Dialogflow 可以模糊比對句子，DDE 話就沒那麼方便，相關的句�
 最後，如果沒有真的一定要用 DDE 的話，我會比較建議 Dialogflow。因為 Dialogflow 支援比較多平台，常見的平台都可以串接，如果想裝在 Zenbo 上也可以用 API(不過這部份我沒有實作)，走跟一般 Android 的路線。
 
 好了，比較完了，那你說我最後是用那一個？我只能說都沒有🤦‍♂️
-論文中，我的語料庫模型是用 TF-IDF 自己建的，之後有時間再補這部份的文章吧！
+論文中，我的語料庫模型是用 TF-IDF 自己建的，之後再補這部份的文章吧！

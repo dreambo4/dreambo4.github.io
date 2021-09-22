@@ -24,7 +24,7 @@ tags:
 
 > 紀錄時間: 2020/04/25
 
-**<<以下是當初研究時隨手紀錄，不太完整，請以官方文件為主>>**
+**<<以下是當初研究時隨手紀錄，請以官方文件為主>>**
 
 這次是根據這兩份教學文件
 - [Template: Hello World](https://zenbo.asus.com/developer/documents/Overview/DDE-Tutorial/Templates/Hello-World)
