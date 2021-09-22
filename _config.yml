@@ -108,3 +108,7 @@ deploy:
   type: 'git'
   repo: 'git@github.com:dreambo4/dreambo4.github.io.git'
   branch: main
+
+#Sitemap
+sitemap:
+    path: sitemap.xml
