@@ -1,5 +1,5 @@
 ---
-title: '[語料庫模型] 03-斷詞工具比較 Jieba vs CKIP'
+title: '[語料庫模型] 04-斷詞工具比較 Jieba vs CKIP'
 date: 2021-09-26 19:53:41
 tags:
 - 斷詞
