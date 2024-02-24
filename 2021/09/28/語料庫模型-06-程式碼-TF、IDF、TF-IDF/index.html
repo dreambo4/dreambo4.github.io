@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="今天和明天的主題會以講解程式碼為主，其中 TF-IDF 演算法主要來自莫煩 Pythton。莫煩 Python 原版程式碼: https:&#x2F;&#x2F;github.com&#x2F;MorvanZhou&#x2F;NLP-Tutorials">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[語料庫模型] 06-程式碼: TF、IDF、TF-IDF">
+<meta property="og:url" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="今天和明天的主題會以講解程式碼為主，其中 TF-IDF 演算法主要來自莫煩 Pythton。莫煩 Python 原版程式碼: https:&#x2F;&#x2F;github.com&#x2F;MorvanZhou&#x2F;NLP-Tutorials">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/tf_.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/tf.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/log.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula2.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/df.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/idf.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/%E7%A4%BA%E6%84%8F%E5%9C%96.png">
+<meta property="article:published_time" content="2021-09-28T14:35:37.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.682Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="TF-IDF">
+<meta property="article:tag" content="語料庫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/","path":"2021/09/28/語料庫模型-06-程式碼-TF、IDF、TF-IDF/","title":"[語料庫模型] 06-程式碼: TF、IDF、TF-IDF"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[語料庫模型] 06-程式碼: TF、IDF、TF-IDF | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A0%90%E8%99%95%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">預處理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A8%88%E7%AE%97-TF-Term-Frequency"><span class="nav-number">2.</span> <span class="nav-text">計算 TF(Term Frequency)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BC%8F%E7%A2%BC"><span class="nav-number">2.1.</span> <span class="nav-text">程式碼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F"><span class="nav-number">2.2.</span> <span class="nav-text">步驟</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97-IDF"><span class="nav-number">3.</span> <span class="nav-text">算 IDF</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BC%8F%E7%A2%BC-1"><span class="nav-number">3.1.</span> <span class="nav-text">程式碼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F-1"><span class="nav-number">3.2.</span> <span class="nav-text">步驟</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97-TF-IDF"><span class="nav-number">4.</span> <span class="nav-text">算 TF-IDF</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">5.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [語料庫模型] 06-程式碼: TF、IDF、TF-IDF
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-09-28 22:35:37" itemprop="dateCreated datePublished" datetime="2021-09-28T22:35:37+08:00">2021-09-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>今天和明天的主題會以講解程式碼為主，其中 TF-IDF 演算法主要來自莫煩 Pythton。<br>莫煩 Python 原版程式碼: <a target="_blank" rel="noopener" href="https://github.com/MorvanZhou/NLP-Tutorials">https://github.com/MorvanZhou/NLP-Tutorials</a></p>
+<span id="more"></span>
+
+<p>我修改過的版本: <a target="_blank" rel="noopener" href="https://gitlab.com/graduate_lab415/nlp/-/blob/master/main.py">https://gitlab.com/graduate_lab415/nlp/-/blob/master/main.py</a></p>
+<blockquote>
+<p>不確定我改了哪些東西(我也不記得了QQ)，大部分應該只有加上印 log 的部分吧。</p>
+</blockquote>
+<p>很重要，再提醒一次，中文要做 TF-IDF 要先經過斷詞，作法請參考<a href="../../26/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-04-%E6%96%B7%E8%A9%9E%E5%B7%A5%E5%85%B7%E6%AF%94%E8%BC%83-Jieba-vs-CKIP/">前天的文章</a>。 今天的 code 建議大家可以搭配 debug 模式使用，一行一行執行可以更清楚運作的步驟唷。</p>
+<h1 id="預處理"><a href="#預處理" class="headerlink" title="預處理"></a>預處理</h1><ol>
+<li>讀檔</li>
+<li>斷詞</li>
+<li>將詞做成 set <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v2i &#x3D; &#123;&#39;word&#39;: index&#125;</span><br><span class="line">i2v &#x3D; &#123;index: &#39;word&#39;&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="計算-TF-Term-Frequency"><a href="#計算-TF-Term-Frequency" class="headerlink" title="計算 TF(Term Frequency)"></a>計算 TF(Term Frequency)</h1><p>代表一個詞在一篇文章(一個句子)中出現的頻率。</p>
+<h2 id="程式碼"><a href="#程式碼" class="headerlink" title="程式碼"></a>程式碼</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_tf</span>(<span class="params">method=<span class="string">&quot;log&quot;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;term frequency: how frequent a word appears in a doc&quot;&quot;&quot;</span></span><br><span class="line">    _tf = np.zeros((<span class="built_in">len</span>(vocab), <span class="built_in">len</span>(docs)), dtype=np.float64)  <span class="comment"># [n_vocab, n_doc]</span></span><br><span class="line">    <span class="keyword">for</span> i, d <span class="keyword">in</span> <span class="built_in">enumerate</span>(docs_words):</span><br><span class="line">        counter = Counter(d)</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> counter.keys():</span><br><span class="line">            _tf[v2i[v], i] = counter[v] / counter.most_common(<span class="number">1</span>)[<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    weighted_tf = tf_methods.get(method, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> weighted_tf <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> weighted_tf(_tf)</span><br></pre></td></tr></table></figure>
+
+<h2 id="步驟"><a href="#步驟" class="headerlink" title="步驟"></a>步驟</h2><ol>
+<li>先建一個2維矩陣 <code>_tf = [詞數, 句子數]</code></li>
+<li>依序填入<br> <img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula.png" alt="formula"><br> <img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/tf_.png" alt="tf_"></li>
+<li>每個欄位都取自然對數<br> <img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/tf.png" alt="tf"><blockquote>
+<p><strong>why 取對數?</strong><br><a target="_blank" rel="noopener" href="https://www.itread01.com/content/1543225745.html">處理資料時，對資料取對數的意義</a><br>log 以 e 為底的圖<br><img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/log.png" alt="log"><br>取log優點</p>
+<ul>
+<li>縮小資料的絕對數值，方便計算。</li>
+<li>對數值小的部分差異的敏感程度比數值大的部分的差異敏感程度更高。</li>
+<li>取對數之後不會改變資料的性質和相關關係，但壓縮了變數的尺度，資料更加平穩</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h1 id="算-IDF"><a href="#算-IDF" class="headerlink" title="算 IDF"></a>算 IDF</h1><ul>
+<li>DF（文件頻率）：是指一個詞出現在幾個句子中。</li>
+<li>IDF（逆向文件頻率）： IDF便是將DF經過轉換，IDF 越低的表示這個詞越不重要，反之亦然。</li>
+</ul>
+<h2 id="程式碼-1"><a href="#程式碼-1" class="headerlink" title="程式碼"></a>程式碼</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_idf</span>(<span class="params">method=<span class="string">&quot;log&quot;</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;df: document frequency&quot;&quot;&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;inverse document frequency: low idf for a word appears in more docs, mean less important&quot;&quot;&quot;</span></span><br><span class="line">    df = np.zeros((<span class="built_in">len</span>(i2v), <span class="number">1</span>))  <span class="comment"># [n_vocab, 1]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(i2v)):</span><br><span class="line">        d_count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> d <span class="keyword">in</span> docs_words:</span><br><span class="line">            d_count += <span class="number">1</span> <span class="keyword">if</span> i2v[i] <span class="keyword">in</span> d <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">        df[i, <span class="number">0</span>] = d_count</span><br><span class="line">    <span class="keyword">if</span> LOG:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\ndf samples:\n&quot;</span>, df)</span><br><span class="line">        <span class="string">&quot;&quot;&quot;print df to a csv file&quot;&quot;&quot;</span></span><br><span class="line">        csv_writer = CsvWriter(<span class="string">&quot;df&quot;</span>)</span><br><span class="line">        csv_writer.write_head(<span class="built_in">list</span>(v2i))</span><br><span class="line">        csv_writer.write_row(df)</span><br><span class="line"></span><br><span class="line">    idf_fn = idf_methods.get(method, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> idf_fn <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError</span><br><span class="line">    <span class="keyword">return</span> idf_fn(df)</span><br></pre></td></tr></table></figure>
+
+<h2 id="步驟-1"><a href="#步驟-1" class="headerlink" title="步驟"></a>步驟</h2><ol>
+<li>先算 df<ol>
+<li>建一個2維矩陣 <code>df = [n_vocab, 1]</code></li>
+<li>依序填入<br> <img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula1.png" alt="formula1"></li>
+</ol>
+</li>
+<li>轉成 idf<ol>
+<li>逐一帶入公式<br>  <img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/formula2.png" alt="formula2"><blockquote>
+<p>如果詞語不在資料中，就導致分母為零，因此分母通常會加一<br>— from wiki <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Tf-idf">https://zh.wikipedia.org/wiki/Tf-idf</a></p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ol>
+<p>注意觀察兩張圖，在 df 的數字越大，在 idf<br><img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/df.png" alt="df"><br><img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/idf.png" alt="idf"></p>
+<h1 id="算-TF-IDF"><a href="#算-TF-IDF" class="headerlink" title="算 TF-IDF"></a>算 TF-IDF</h1><p>TF-IDF 其實就是將 TF 加權 IDF 後的結果。</p>
+<p>公式: <code>tf_idf = tf * idf</code></p>
+<p>注意這邊是「乘」，不是矩陣乘法的那個 dot 哦。兩者在 Python 裡的寫法不一樣。</p>
+<p>看個示意圖:<br>a 的第一列都乘以 c 的第一列<br>a 的第二列都乘以 c 的第二列<br>…<br><img src="/2021/09/28/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-06-%E7%A8%8B%E5%BC%8F%E7%A2%BC-TF%E3%80%81IDF%E3%80%81TF-IDF/%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="示意圖"></p>
+<p>對應到程式碼裡的幾個陣列，他們的 size 分別是這樣的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tf [n_vocab, n_doc]</span><br><span class="line">df [n_vocab, 1]</span><br><span class="line">tf-idf [n_vocab, n_doc]</span><br></pre></td></tr></table></figure>
+
+<p>將 <code>tf</code> * <code>idf</code> 就會等於 <code>tf_idf</code> 囉!</p>
+<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>到這邊，語料庫模型(<code>tf_idf</code>)就建完了。明天會介紹，當我們接收到一個新句子，要如何比較它和其他句子的相似性。</p>
+<p>好了，明天見！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/TF-IDF/" rel="tag"># TF-IDF</a>
+              <a href="/tags/%E8%AA%9E%E6%96%99%E5%BA%AB/" rel="tag"># 語料庫</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/26/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-03-%E8%AA%9E%E6%96%99%E8%AE%80%E5%8F%96-%E8%B3%87%E6%96%99%E6%A0%BC%E5%BC%8F%E8%BD%89%E6%8F%9B/" rel="prev" title="[語料庫模型] 03-語料讀取&資料格式轉換">
+                  <i class="fa fa-chevron-left"></i> [語料庫模型] 03-語料讀取&資料格式轉換
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/10/01/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-07-%E7%A8%8B%E5%BC%8F%E7%A2%BC-%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/" rel="next" title="[語料庫模型] 07-程式碼: 餘弦相似性">
+                  [語料庫模型] 07-程式碼: 餘弦相似性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

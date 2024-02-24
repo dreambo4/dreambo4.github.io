@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="接續上一篇，昨天已經把問答集的內容都爬下來了，再來要把內容整理成下一個階段(訓練模型)，方便使用的格式。完整的程式碼可以參考: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;MOHW-QandA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[爬蟲] 02-儲存爬蟲資料-CSV格式">
+<meta property="og:url" content="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="接續上一篇，昨天已經把問答集的內容都爬下來了，再來要把內容整理成下一個階段(訓練模型)，方便使用的格式。完整的程式碼可以參考: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;MOHW-QandA">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/csv_text.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/csv_excel.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/get_file.png">
+<meta property="article:published_time" content="2021-09-13T18:00:13.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.619Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="爬蟲">
+<meta property="article:tag" content="CSV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/csv_text.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/","path":"2021/09/14/爬蟲-02-儲存爬蟲資料-CSV格式/","title":"[爬蟲] 02-儲存爬蟲資料-CSV格式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[爬蟲] 02-儲存爬蟲資料-CSV格式 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CSV"><span class="nav-number">1.</span> <span class="nav-text">CSV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E4%B8%8D%E7%94%A8%E8%B3%87%E6%96%99%E5%BA%AB"><span class="nav-number">1.1.</span> <span class="nav-text">為什麼不用資料庫?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E7%A8%8B%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">主要程式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [爬蟲] 02-儲存爬蟲資料-CSV格式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-09-14 02:00:13" itemprop="dateCreated datePublished" datetime="2021-09-14T02:00:13+08:00">2021-09-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>接續上一篇，昨天已經把問答集的內容都爬下來了，再來要把內容整理成下一個階段(訓練模型)，方便使用的格式。<br>完整的程式碼可以參考: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/MOHW-QandA">https://github.com/dreambo4/MOHW-QandA</a></p>
+<span id="more"></span>
+
+<h1 id="CSV"><a href="#CSV" class="headerlink" title="CSV"></a>CSV</h1><p>什麼是 CSV?</p>
+<blockquote>
+<p>逗號分隔值（Comma-Separated Values，CSV），其檔案<strong>以純文字形式儲存表格資料</strong>。純文字意味著該檔案是一個字元序列，不含必須像二進位數字那樣被解讀的資料。<br>– form <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%E5%80%BC">wiki</a></p>
+</blockquote>
+<p>看圖吧!</p>
+<p>原始的 CSV 就只是一個純文字檔，各個欄位以 <code>,</code> 隔開。不同筆資料，以換行區隔。<br>首列通常是欄位名稱。<br><img src="/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/csv_text.png" alt="csv_text"></p>
+<p>特別的是，剛提過 CSV 儲存的資料是個表格嘛，所以我們也可以使用 Excel 或 LibreOffice Calc 編輯檔案，很方便。<br><img src="/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/csv_excel.png" alt="csv_excel"></p>
+<h2 id="為什麼不用資料庫"><a href="#為什麼不用資料庫" class="headerlink" title="為什麼不用資料庫?"></a>為什麼不用資料庫?</h2><p>CSV 的優點是好攜帶 &amp; 好轉移，因為是純文字的關係，比較不會有需要用特定軟體開啟的狀況，一般的文字編輯器(記事本、Sublime、Vim…)就可以開啟。本系統資料儲存主要使用 CSV 格式，而非資料庫的原因是，目前沒有需要。爬蟲的步驟只會做一次，不需要每次建置模型都爬蟲一次取得資料，因此初始的資料集內容基本是固定的。而程式建模型的過程，也只會有「讀取全部資料」的動作，沒有條件查詢、新增、修改、刪除。因此評估後，我們使用 CSV 作為資料及儲存的格式。</p>
+<p><strong>這是本系統未使用資料庫的原因，不一定適合你的狀況，請自行評估調整。</strong></p>
+<h1 id="主要程式"><a href="#主要程式" class="headerlink" title="主要程式"></a>主要程式</h1><p>主要的程式收兩個參數，<code>filename</code> 是生成檔案的名字；<code>datelist</code> 是要存入檔案的內容，型態是 list。<br>這個 CSV 的套件，提供很多方便的功能。首先寫入欄位名稱，再用迴圈的方式，一筆一筆將內容寫入檔案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">writeCsv</span>(<span class="params">filename, dataList</span>):</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filename+<span class="string">&#x27;.csv&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>) <span class="keyword">as</span> csvfile:</span><br><span class="line">        <span class="comment"># 定義欄位</span></span><br><span class="line">        fieldnames = [<span class="string">&#x27;q&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;url&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 將 dictionary 寫入 CSV 檔</span></span><br><span class="line">        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 寫入第一列的欄位名稱</span></span><br><span class="line">        writer.writeheader()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 寫入資料</span></span><br><span class="line">        <span class="keyword">for</span> qa <span class="keyword">in</span> dataList:</span><br><span class="line">            writer.writerow(qa)</span><br></pre></td></tr></table></figure>
+
+<p>Colab 另個方便的地方，執行後，檔案可以直接下載~<br><img src="/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/get_file.png" alt="get_file"></p>
+<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>爬蟲的文章告一段落，接下來會是 TF-IDF 和模型建置相關的部分。明天見！</p>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li>Beautiful Soup 4.9.0 documentation. (2021). Beautiful Soup Documentation. Retrieved from<br><a target="_blank" rel="noopener" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">https://www.crummy.com/software/BeautifulSoup/bs4/doc/</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E7%88%AC%E8%9F%B2/" rel="tag"># 爬蟲</a>
+              <a href="/tags/CSV/" rel="tag"># CSV</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/" rel="prev" title="[爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例">
+                  <i class="fa fa-chevron-left"></i> [爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/" rel="next" title="[語料庫模型] 01-TF-IDF與餘弦相似性">
+                  [語料庫模型] 01-TF-IDF與餘弦相似性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

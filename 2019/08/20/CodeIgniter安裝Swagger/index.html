@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="本文曾發佈在 https:&#x2F;&#x2F;hackmd.io&#x2F;@yrw&#x2F;S1TdomtNS   環境: Windows、XAMPP   下載CodeIgniter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CodeIgniter安裝Swagger">
+<meta property="og:url" content="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="本文曾發佈在 https:&#x2F;&#x2F;hackmd.io&#x2F;@yrw&#x2F;S1TdomtNS   環境: Windows、XAMPP   下載CodeIgniter">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/dir.png">
+<meta property="og:image" content="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/edit.png">
+<meta property="og:image" content="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/show.png">
+<meta property="article:published_time" content="2019-08-19T17:19:26.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.538Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="API">
+<meta property="article:tag" content="CodeIgniter">
+<meta property="article:tag" content="Swagger">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/dir.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/","path":"2019/08/20/CodeIgniter安裝Swagger/","title":"CodeIgniter安裝Swagger"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CodeIgniter安裝Swagger | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CodeIgniter安裝Swagger
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2019-08-20 01:19:26" itemprop="dateCreated datePublished" datetime="2019-08-20T01:19:26+08:00">2019-08-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>本文曾發佈在 <a target="_blank" rel="noopener" href="https://hackmd.io/@yrw/S1TdomtNS">https:&#x2F;&#x2F;hackmd.io&#x2F;@yrw&#x2F;S1TdomtNS</a></li>
+</ul>
+<blockquote>
+<p>環境: Windows、XAMPP</p>
+</blockquote>
+<ol>
+<li><p>下載CodeIgniter</p>
+<span id="more"></span></li>
+<li><p>建資料夾<code>YourProject/swagger/</code></p>
+</li>
+<li><p>下載<a target="_blank" rel="noopener" href="https://github.com/swagger-api/swagger-ui">Swagger UI</a>，解壓縮，將<code>dist/</code>資料夾裡的檔案全搬到<code>YourProject/swagger/</code><br> <img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/dir.png" alt="dir"></p>
+</li>
+<li><p>安裝</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require zircote/swagger-php:2.*</span><br></pre></td></tr></table></figure></li>
+<li><p>有需要的話，安裝</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require darkaonline/l5-swagger</span><br></pre></td></tr></table></figure></li>
+<li><p>建立Controller(Member)</p>
+</li>
+<li><p>加上一些註解 swg annotation<br>一份專案裡至少需要一個<code>@SWG\Info</code>的註解</p>
+ <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这里需要一个主`Swagger`定义：</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@SWG</span>\Swagger(</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Info(</span></span><br><span class="line"><span class="comment"> *         title=&quot;我的`Swagger`API文檔&quot;,</span></span><br><span class="line"><span class="comment"> *         version=&quot;1.0.0&quot;</span></span><br><span class="line"><span class="comment"> *     )</span></span><br><span class="line"><span class="comment"> * )</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加上一些方法和註解</p>
+ <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@SWG</span>\Post(</span></span><br><span class="line"><span class="comment"> *     path=&quot;/YourProject/index.php/Member/login&quot;,</span></span><br><span class="line"><span class="comment"> *     tags=&#123;&quot;會員功能&quot;&#125;,</span></span><br><span class="line"><span class="comment"> *     summary=&quot;登入&quot;,</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Parameter(</span></span><br><span class="line"><span class="comment"> *         in=&quot;query&quot;,</span></span><br><span class="line"><span class="comment"> *         name=&quot;account&quot;,</span></span><br><span class="line"><span class="comment"> *         type=&quot;string&quot;,</span></span><br><span class="line"><span class="comment"> *         description=&quot;帳號&quot;,</span></span><br><span class="line"><span class="comment"> *         required=true,</span></span><br><span class="line"><span class="comment"> *     ),</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Parameter(</span></span><br><span class="line"><span class="comment"> *         in=&quot;query&quot;,</span></span><br><span class="line"><span class="comment"> *         name=&quot;password&quot;,</span></span><br><span class="line"><span class="comment"> *         type=&quot;string&quot;,</span></span><br><span class="line"><span class="comment"> *         description=&quot;密碼&quot;,</span></span><br><span class="line"><span class="comment"> *         required=true,</span></span><br><span class="line"><span class="comment"> *     ),</span></span><br><span class="line"><span class="comment"> *     <span class="doctag">@SWG</span>\Response(response=&quot;default&quot;, description=&quot;操作成功&quot;)</span></span><br><span class="line"><span class="comment"> * )</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span>   <span class="function"><span class="keyword">function</span>   <span class="title">login</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;&#123;&quot;msg&quot;:&quot;hello world&quot;&#125;&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下指令生成API 文件檔(json格式)<br>路徑和檔名可以自行調整</p>
+<blockquote>
+<p>php [swagger程式位置] [Controller資料夾(需要掃描的資料夾)] -o [api文件生成位置]</p>
+</blockquote>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php /xampp/htdocs/YourProject/vendor/zircote/swagger-php/bin/swagger /xampp/htdocs/YourProject/application/controllers -o \xampp\htdocs\YourProject\api_doc.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改<code>YourProject/swagger/index.html</code><br>改成你的api文件位置<br><a target="_blank" rel="noopener" href="http://127.0.0.1/YourProject/api_doc.json">http://127.0.0.1/YourProject/api_doc.json</a><br><img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/edit.png" alt="edit"></p>
+</li>
+<li><p>瀏覽 <a target="_blank" rel="noopener" href="http://127.0.0.1/Swagger_CodeIgniter/swagger/">http://127.0.0.1/Swagger_CodeIgniter/swagger/</a><br><strong>沒更新的話，用無痕瀏覽</strong><br><img src="/2019/08/20/CodeIgniter%E5%AE%89%E8%A3%9DSwagger/show.png" alt="show"></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/API/" rel="tag"># API</a>
+              <a href="/tags/CodeIgniter/" rel="tag"># CodeIgniter</a>
+              <a href="/tags/Swagger/" rel="tag"># Swagger</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/07/13/Workshop%E8%A8%98%E9%8C%84-Volley%E8%88%87API/" rel="prev" title="Workshop記錄-Volley與API">
+                  <i class="fa fa-chevron-left"></i> Workshop記錄-Volley與API
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/22/Windows-%E5%81%9C%E7%94%A8%E9%96%8B%E6%A9%9F%E5%8D%B3%E5%95%9F%E5%8B%95-MongoDB/" rel="next" title="Windows 停用開機即啟動 MongoDB">
+                  Windows 停用開機即啟動 MongoDB <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

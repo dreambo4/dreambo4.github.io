@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="時逢疫情來襲，三級警戒讓我也不敢回學校，但又不可能把 Zenbo 搬回家，還好之前有照 Zenbo 的規格開了一台模擬器，雖然沒辦法所有的畫面都和在 Zenbo 一樣 (ASUS 應該有自己客製一些東西)，但至少在沒有使用 Zenbo SDK 的狀況下，執行 Android 程式和測試有沒有跑版都OK，這樣我就能在本機測試了。 這篇會簡單紀錄一下我開的模擬器規格，Zenbo 的作業系統是 Andr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Zenbo開發系列] 02-建置與Zenbo規格相同的模擬器">
+<meta property="og:url" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="時逢疫情來襲，三級警戒讓我也不敢回學校，但又不可能把 Zenbo 搬回家，還好之前有照 Zenbo 的規格開了一台模擬器，雖然沒辦法所有的畫面都和在 Zenbo 一樣 (ASUS 應該有自己客製一些東西)，但至少在沒有使用 Zenbo SDK 的狀況下，執行 Android 程式和測試有沒有跑版都OK，這樣我就能在本機測試了。 這篇會簡單紀錄一下我開的模擬器規格，Zenbo 的作業系統是 Andr">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%BB%BA%E7%AB%8B%E6%96%B0%E6%A8%A1%E6%93%AC%E5%99%A8.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%BB%BA%E7%AB%8B%E6%96%B0%E7%A1%AC%E9%AB%94%E5%A4%96%E5%9E%8B.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E7%A1%AC%E9%AB%94%E8%A6%8F%E6%A0%BC.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E9%81%B8%E6%93%87%E7%A1%AC%E9%AB%94%E8%A3%9D%E7%BD%AE.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E9%81%B8%E6%93%87%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1%E7%89%88%E6%9C%AC.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E6%A8%A1%E6%93%AC%E5%99%A8%E5%AE%8C%E6%88%90.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%B0%B1%E6%98%AF%E5%B9%B3%E6%9D%BF.jpg">
+<meta property="article:published_time" content="2021-08-05T09:32:20.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.549Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="Zenbo">
+<meta property="article:tag" content="模擬器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%BB%BA%E7%AB%8B%E6%96%B0%E6%A8%A1%E6%93%AC%E5%99%A8.jpg">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/","path":"2021/08/05/Zenbo開發系列-02-建置與Zenbo規格相同的模擬器/","title":"[Zenbo開發系列] 02-建置與Zenbo規格相同的模擬器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Zenbo開發系列] 02-建置與Zenbo規格相同的模擬器 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E6%93%AC%E5%99%A8%E8%A6%8F%E6%A0%BC"><span class="nav-number">1.</span> <span class="nav-text">模擬器規格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%96%8B%E5%A7%8B%E5%BB%BA%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">開始建置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E7%A1%AC%E9%AB%94%E5%A4%96%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">建立硬體外型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%A8%A1%E6%93%AC%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">建立模擬器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Zenbo開發系列] 02-建置與Zenbo規格相同的模擬器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-05 17:32:20" itemprop="dateCreated datePublished" datetime="2021-08-05T17:32:20+08:00">2021-08-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>時逢疫情來襲，三級警戒讓我也不敢回學校，但又不可能把 Zenbo 搬回家，還好之前有照 Zenbo 的規格開了一台模擬器，雖然沒辦法所有的畫面都和在 Zenbo 一樣 (ASUS 應該有自己客製一些東西)，但至少在沒有使用 Zenbo SDK 的狀況下，執行 Android 程式和測試有沒有跑版都OK，這樣我就能在本機測試了。</p>
+<p>這篇會簡單紀錄一下我開的模擬器規格，Zenbo 的作業系統是 Android，基本上可以把他當作是一台會走路的平板啦。</p>
+<span id="more"></span>
+
+<h1 id="模擬器規格"><a href="#模擬器規格" class="headerlink" title="模擬器規格"></a>模擬器規格</h1><p>螢幕解析度: 1028*752 (10.1 吋)<br>螢幕方向: 橫向<br>Android 版本: 6.0 (API 23)</p>
+<h1 id="開始建置"><a href="#開始建置" class="headerlink" title="開始建置"></a>開始建置</h1><p>首先開一個新的模擬器<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%BB%BA%E7%AB%8B%E6%96%B0%E6%A8%A1%E6%93%AC%E5%99%A8.jpg" alt="建立新模擬器"></p>
+<h2 id="建立硬體外型"><a href="#建立硬體外型" class="headerlink" title="建立硬體外型"></a>建立硬體外型</h2><p>建立新裝置外型<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%BB%BA%E7%AB%8B%E6%96%B0%E7%A1%AC%E9%AB%94%E5%A4%96%E5%9E%8B.jpg" alt="建立新硬體外型"></p>
+<p>可以照著設定<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E7%A1%AC%E9%AB%94%E8%A6%8F%E6%A0%BC.jpg" alt="硬體規格"></p>
+<p>或是把下面這個我做好的直接 import</p>
+<script src="https://gist.github.com/dreambo4/44f9a782e079964da0a46fa4757e673e.js"></script>
+
+<h2 id="建立模擬器"><a href="#建立模擬器" class="headerlink" title="建立模擬器"></a>建立模擬器</h2><p>選擇我們剛建好的硬體外型<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E9%81%B8%E6%93%87%E7%A1%AC%E9%AB%94%E8%A3%9D%E7%BD%AE.jpg" alt="選擇硬體裝置"></p>
+<p>作業系統版本，因為要跟 Zenbo 一樣，所以選 6.0<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E9%81%B8%E6%93%87%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1%E7%89%88%E6%9C%AC.jpg" alt="選擇作業系統版本"></p>
+<p>確認一下是否都正確，按下Finish，執行一下，模擬器就建好囉！<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E6%A8%A1%E6%93%AC%E5%99%A8%E5%AE%8C%E6%88%90.jpg" alt="模擬器完成"></p>
+<p>最後，你會獲得一台 Android 6 的平板 😅<br><img src="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-02-%E5%BB%BA%E7%BD%AE%E8%88%87Zenbo%E8%A6%8F%E6%A0%BC%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A8%A1%E6%93%AC%E5%99%A8/%E5%B0%B1%E6%98%AF%E5%B9%B3%E6%9D%BF.jpg" alt="就是平板"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/Zenbo/" rel="tag"># Zenbo</a>
+              <a href="/tags/%E6%A8%A1%E6%93%AC%E5%99%A8/" rel="tag"># 模擬器</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/04/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-01-%E5%BE%8C%E8%93%8B%E6%89%93%E9%96%8B%E6%96%B9%E5%BC%8F%E3%80%81%E5%81%B5%E9%8C%AFUSB%E5%AD%94%E4%BD%8D%E7%BD%AE/" rel="prev" title="[Zenbo開發系列] 01-後蓋打開方式、偵錯USB孔位置">
+                  <i class="fa fa-chevron-left"></i> [Zenbo開發系列] 01-後蓋打開方式、偵錯USB孔位置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/05/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-03-DDE-Editor-vs-Dialogflow/" rel="next" title="[Zenbo開發系列] 03-DDE Editor vs Dialogflow">
+                  [Zenbo開發系列] 03-DDE Editor vs Dialogflow <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

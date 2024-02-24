@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="TF-IDF（Term Frequency - Inverse Document Frequency）和餘弦相似性是整套系統很重要的部分，主要用來建立整個問答集的模型，還有比對使用者輸入的句子和問答集的哪一句最相似。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[語料庫模型] 01-TF-IDF與餘弦相似性">
+<meta property="og:url" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="TF-IDF（Term Frequency - Inverse Document Frequency）和餘弦相似性是整套系統很重要的部分，主要用來建立整個問答集的模型，還有比對使用者輸入的句子和問答集的哪一句最相似。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_WordSet.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_TF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_DF+IDF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_TFIDF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/category3.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7%E4%BA%8C%E7%B6%AD%E7%A4%BA%E6%84%8F%E5%9C%96.png">
+<meta property="article:published_time" content="2021-09-17T15:44:30.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.658Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="TF-IDF">
+<meta property="article:tag" content="語料庫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_WordSet.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/","path":"2021/09/17/語料庫模型-01-TF-IDF與餘弦相似性/","title":"[語料庫模型] 01-TF-IDF與餘弦相似性"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[語料庫模型] 01-TF-IDF與餘弦相似性 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B0%A1%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">簡介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TF-IDF-%E5%AF%A6%E4%BE%8B%E8%AA%AA%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">TF-IDF 實例說明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TF-IDF-%E7%9F%A9%E9%99%A3"><span class="nav-number">3.</span> <span class="nav-text">TF-IDF 矩陣</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">餘弦相似性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">5.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [語料庫模型] 01-TF-IDF與餘弦相似性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-09-17 23:44:30" itemprop="dateCreated datePublished" datetime="2021-09-17T23:44:30+08:00">2021-09-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>TF-IDF（Term Frequency - Inverse Document Frequency）和餘弦相似性是整套系統很重要的部分，主要用來建立整個問答集的模型，還有比對使用者輸入的句子和問答集的哪一句最相似。</p>
+<span id="more"></span>
+
+<h1 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h1><p>TF-IDF</p>
+<ul>
+<li>常用在資訊檢索與文字探勘的加權方式，是一種統計方法，用來評估一個詞在句子或文件中的重要程度。</li>
+<li>應用於中文時，由於中文字詞間不如英文有空白相隔，因此中文語句需先經過適當<strong>斷詞</strong>。</li>
+<li>假設<strong>出現越多次的詞是越不重要的詞</strong>。</li>
+</ul>
+<p>TF-IDF 分為兩個部分，TF 和 IDF。(IDF 由 DF 轉換而來)</p>
+<ul>
+<li>TF（詞頻）：一個詞在一個句子中出現的頻率。</li>
+<li>DF（文件頻率）：是指一個詞出現在幾個句子中。</li>
+<li>IDF（逆向文件頻率）： IDF便是將DF經過轉換，IDF 越低的表示這個詞越不重要，反之亦然。</li>
+</ul>
+<h1 id="TF-IDF-實例說明"><a href="#TF-IDF-實例說明" class="headerlink" title="TF-IDF 實例說明"></a>TF-IDF 實例說明</h1><p>以五個擷取自問答集的問句為例，經過斷詞之後，問句會變成表中的格式。</p>
+<ul>
+<li>表1<table>
+<thead>
+<tr>
+<th>編號</th>
+<th>問句</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>[‘如何’, ‘申請’, ‘長期’, ‘照顧’, ‘服務’, ‘及’, ‘流程’, ‘為’, ‘何’, ‘?’]</td>
+</tr>
+<tr>
+<td>1</td>
+<td>[‘申請’, ‘長照’, ‘服務’, ‘有’, ‘什麼’, ‘條件’, ‘？’]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>[‘長期’, ‘照顧’, ‘服務’, ‘項目’, ‘有’, ‘哪些’, ‘？’]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>[‘何謂’, ‘是’, ‘「’, ‘居家’, ‘服務’, ‘」’, ‘？’]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>[‘何謂’, ‘「’, ‘喘息’, ‘服務’, ‘」’, ‘？’]</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>首先，我們會把所有的詞整理成一個集合（圖 1）。再統計每個詞出現在句子中的頻率，例如，「有」出現在第 1、2 句（參考 表格 1、圖 1 綠框、圖 2 綠框）。再統計一個詞出現在幾個句子中，例如，「服務」在五個句子都有，所以相對的 IDF 值就會比較小（參考 表格 1、圖 1 橘框、圖 3 橘框）。IDF 可以被當作是一個權重，用來表示這個詞的重要程度，把 TF * IDF 就會得到這個資料集的模型（圖 4）。</p>
+<ul>
+<li>圖1<br>  <img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_WordSet.png" alt="5例句_WordSet"></li>
+<li>圖2<br>  <img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_TF.png" alt="5例句_TF"></li>
+<li>圖3<br>  <img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_DF+IDF.png" alt="5例句_DF+IDF"></li>
+<li>圖4<br>  <img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/5%E4%BE%8B%E5%8F%A5_TFIDF.png" alt="5例句_TFIDF"></li>
+</ul>
+<p>TF-IDF 使用餘弦相似性公式計算出輸入的問句與問答集中每個問題的相似性，再找出相似性最高的前三筆，回傳給使用者端 APP 使用。</p>
+<h1 id="TF-IDF-矩陣"><a href="#TF-IDF-矩陣" class="headerlink" title="TF-IDF 矩陣"></a>TF-IDF 矩陣</h1><p>TF-IDF 可以計算出每個詞在句子中權重分布的狀況，再透過餘弦相似性比較輸入的句子與問答集中每個問題的相似性，最後找到與輸入句子最相符的問答組合。</p>
+<p>我們用程式畫了一張圖，每一列代表一個句子，每一欄代表一個詞，顏色深淺代表這個詞在這個句子中的重要性。如截圖所示，欄位個別代表一個句子，每一列則代表每一個詞，由這個矩陣可以觀察到所有權重的分佈狀況。</p>
+<p><img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/category3.png" alt="category3"></p>
+<blockquote>
+<p>因整個問答集的問句及詞語太多，完整的截圖放在文中不易閱讀，因此本文中僅使用部分問句與詞語生成圖表示意。</p>
+</blockquote>
+<h1 id="餘弦相似性"><a href="#餘弦相似性" class="headerlink" title="餘弦相似性"></a>餘弦相似性</h1><p>這些句子都可以當成是一個一個的向量，當然他的維度比較高，我們這邊就以二維的做示意圖，餘弦相似度無關乎向量大小，重點是向量之間的方向。</p>
+<p>本文以二維示意圖說明，假設資料集中有 A、B 兩個句子，C 是要比對的句子。當把 C 放進來一起比較就可以看出，C 和 B 的餘弦相似性比 C 和 A 大。</p>
+<p><img src="/2021/09/17/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-01-TF-IDF%E8%88%87%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7/%E9%A4%98%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7%E4%BA%8C%E7%B6%AD%E7%A4%BA%E6%84%8F%E5%9C%96.png" alt="餘弦相似性二維示意圖"></p>
+<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>透過 TF-IDF 建立模型，再使用餘弦相似性比對句子間的相似性。基本上本系統最核心的部分就是這兩個部分了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/TF-IDF/" rel="tag"># TF-IDF</a>
+              <a href="/tags/%E8%AA%9E%E6%96%99%E5%BA%AB/" rel="tag"># 語料庫</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/" rel="prev" title="[爬蟲] 02-儲存爬蟲資料-CSV格式">
+                  <i class="fa fa-chevron-left"></i> [爬蟲] 02-儲存爬蟲資料-CSV格式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/23/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-02-%E5%95%8F%E7%AD%94%E7%B5%84%E5%90%88%E5%88%86%E9%A1%9E%E6%96%B9%E5%BC%8F/" rel="next" title="[語料庫模型] 02-問答組合分類方式">
+                  [語料庫模型] 02-問答組合分類方式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

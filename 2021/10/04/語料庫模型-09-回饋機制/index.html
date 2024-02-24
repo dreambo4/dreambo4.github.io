@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="聊天機器人雖有問答集可以回覆大部分常見問題，但難免會有疏漏。因此本研究亦設計回饋機制，若使用者發現機器人的回覆內容不符合想預期，可以直接查看與問句第二和第三相似的問答組合，或是點選「以上皆非」選項，兩種方式系統都會自動記錄相關資訊。後續我們便可整理蒐集到的組合，持續優化聊天機器人與擴增問答集。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[語料庫模型] 09-回饋機制">
+<meta property="og:url" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="聊天機器人雖有問答集可以回覆大部分常見問題，但難免會有疏漏。因此本研究亦設計回饋機制，若使用者發現機器人的回覆內容不符合想預期，可以直接查看與問句第二和第三相似的問答組合，或是點選「以上皆非」選項，兩種方式系統都會自動記錄相關資訊。後續我們便可整理蒐集到的組合，持續優化聊天機器人與擴增問答集。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/flow.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6_log.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/%E9%83%A8%E5%88%86%E5%95%8F%E7%AD%94%E9%9B%86%E6%88%AA%E5%9C%96.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/image25.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/image26.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/359.png">
+<meta property="article:published_time" content="2021-10-04T15:29:40.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.699Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="語料庫">
+<meta property="article:tag" content="回饋機制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/flow.jpg">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/","path":"2021/10/04/語料庫模型-09-回饋機制/","title":"[語料庫模型] 09-回饋機制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[語料庫模型] 09-回饋機制 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BC%8F%E7%A2%BC"><span class="nav-number">1.</span> <span class="nav-text">程式碼</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E5%8F%83%E6%95%B8"><span class="nav-number">1.1.</span> <span class="nav-text">接收參數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E7%82%BA%E6%96%B0%E5%95%8F%E9%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">判斷是否為新問題</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%87%E8%A8%98%E9%8C%84%E5%AF%AB%E5%85%A5%E6%AA%94%E6%A1%88"><span class="nav-number">1.3.</span> <span class="nav-text">將記錄寫入檔案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AA%A2%E6%9F%A5%E5%AF%AB%E6%AA%94%E6%98%AF%E5%90%A6%E6%88%90%E5%8A%9F"><span class="nav-number">1.4.</span> <span class="nav-text">檢查寫檔是否成功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B0%E5%87%BA-JSON"><span class="nav-number">1.5.</span> <span class="nav-text">印出 JSON</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [語料庫模型] 09-回饋機制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-10-04 23:29:40" itemprop="dateCreated datePublished" datetime="2021-10-04T23:29:40+08:00">2021-10-04</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>聊天機器人雖有問答集可以回覆大部分常見問題，但難免會有疏漏。因此本研究亦設計回饋機制，若使用者發現機器人的回覆內容不符合想預期，可以直接查看與問句第二和第三相似的問答組合，或是點選「以上皆非」選項，兩種方式系統都會自動記錄相關資訊。後續我們便可整理蒐集到的組合，持續優化聊天機器人與擴增問答集。</p>
+<span id="more"></span>
+<blockquote>
+<p>「[語料庫模型] 07-程式碼: 餘弦相似性」這篇的程式碼會回傳相似度最高的 3 個問答組合。</p>
+</blockquote>
+<p><img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/flow.jpg" alt="flow"></p>
+<p>回饋紀錄使用與問答集相似的 CSV 格式儲存，方便整理後移植到資料集中。</p>
+<ul>
+<li>回饋紀錄的 log<br>  連結: <a target="_blank" rel="noopener" href="https://gitlab.com/graduate_lab415/nlp/-/blob/master/output/adjustments.bk.csv">https://gitlab.com/graduate_lab415/nlp/-/blob/master/output/adjustments.bk.csv</a><br>  <img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6_log.png" alt="回饋機制_log"></li>
+<li>問答集(語料庫)<br>  連結: <a target="_blank" rel="noopener" href="https://gitlab.com/graduate_lab415/nlp/-/blob/master/docs/fixed_file_1622789141_remove_duplicate_labeled_renumber.csv">https://gitlab.com/graduate_lab415/nlp/-/blob/master/docs/fixed_file_1622789141_remove_duplicate_labeled_renumber.csv</a><br>  <img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/%E9%83%A8%E5%88%86%E5%95%8F%E7%AD%94%E9%9B%86%E6%88%AA%E5%9C%96.png" alt="部分問答集截圖"></li>
+</ul>
+<p>比較不同的是，回饋紀錄的 Q 欄位代表的是使用者輸入的語句，A 欄位則會根據使用者的選擇而有不同，主要分為兩種情況。</p>
+<ul>
+<li><strong>情況一，點選其他相符的選項</strong><br>  使用者輸入「申請喘息服務」，而機器人一開始回覆的問答組合不符預期，所以使用者點選查看第三相符的問答組合「總則(給付八)_獨居長輩是否能使用喘息服務」，因此可以判斷「使用者輸入的語句」與「第三相符問答組合的答案」較相符，並將此新的問答組合儲存於回饋紀錄中。<br>  <img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/image25.png" alt="image25"></li>
+<li><strong>情況二，點選「以上皆非」</strong><br>  使用者輸入「外籍看護來自哪一國」，而機器人回覆的內容都不符合使用者期待，所以他選擇「以上皆非」，代表此問題對我們問答集來說是新問題，因此回饋紀錄就會記錄一筆新的問答組合。<br>  <img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/image26.png" alt="image26"></li>
+</ul>
+<h1 id="程式碼"><a href="#程式碼" class="headerlink" title="程式碼"></a>程式碼</h1><p>程式碼: <a target="_blank" rel="noopener" href="https://gitlab.com/graduate_lab415/nlp/-/blob/master/add_adjustment.py">https://gitlab.com/graduate_lab415/nlp/-/blob/master/add_adjustment.py</a><br>這部分的程式碼，是為了讓 API 可以將回饋紀錄寫進檔案</p>
+<h2 id="接收參數"><a href="#接收參數" class="headerlink" title="接收參數"></a>接收參數</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">param = sys.argv</span><br><span class="line">q = param[<span class="number">1</span>] <span class="comment">#使用者輸入的問句</span></span><br><span class="line">qa_id = param[<span class="number">2</span>] <span class="comment">#使用者認為較貼切的問句，若都不符合則傳送 -1 </span></span><br><span class="line">category_id = param[<span class="number">3</span>] <span class="comment">#使用者當下選擇的類別編號</span></span><br></pre></td></tr></table></figure>
+
+<p>可以接收像是這樣的參數</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 add_adjustment.py &quot;申請喘息服務&quot; 359 0</span><br></pre></td></tr></table></figure>
+
+<h2 id="判斷是否為新問題"><a href="#判斷是否為新問題" class="headerlink" title="判斷是否為新問題"></a>判斷是否為新問題</h2><p>新問題是指使用者選了「以上皆非」，也就是說使用者認為他的問句和我們提供的都不相似，我們把這種狀況認為是新問題。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> qa_id == <span class="string">&quot;-1&quot;</span>:</span><br><span class="line">    result[<span class="string">&#x27;new_question&#x27;</span>] = <span class="literal">True</span></span><br><span class="line">    answer = <span class="string">&quot;&quot;</span></span><br><span class="line">    remark = <span class="string">&quot;New Question&quot;</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    result[<span class="string">&#x27;new_question&#x27;</span>] = <span class="literal">False</span></span><br><span class="line">    qa = os.popen(</span><br><span class="line">        <span class="string">&quot;/home/yr/PycharmProjects/nlp/venv/bin/python3 /home/yr/PycharmProjects/nlp/get_answer_by_id.py &quot;</span> + qa_id).read()</span><br><span class="line">    qa = json.loads(qa)</span><br><span class="line">    answer = qa[<span class="string">&#x27;A&#x27;</span>]</span><br><span class="line">    remark = <span class="string">&quot;Origin Question &quot;</span>+qa[<span class="string">&#x27;Q&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p><code>result</code> 是用來記錄狀況，印出最後的 JSON 檔案的。<br><code>remark</code> 就是備註，若是新問題，備註就會記錄 “New Question”；反之，則紀錄使用者認為更貼近問題。<br><code>answer</code> 是針對使用者的問句，若是新問題，就留空，待後續維護人員評估；反之，使用編號 359 查出問答組合，並把答案的部分存到 <code>answer</code>。</p>
+<p><img src="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-09-%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/359.png" alt="359"></p>
+<h2 id="將記錄寫入檔案"><a href="#將記錄寫入檔案" class="headerlink" title="將記錄寫入檔案"></a>將記錄寫入檔案</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">file_exist = os.path.isfile(<span class="string">&quot;/home/yr/PycharmProjects/nlp/output/adjustments.csv&quot;</span>)</span><br><span class="line">csv_file = <span class="built_in">open</span>(<span class="string">&quot;/home/yr/PycharmProjects/nlp/output/adjustments.csv&quot;</span>, <span class="string">&quot;a+&quot;</span>)</span><br><span class="line">writer = csv.writer(csv_file, delimiter=<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;Add CSV Title&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> file_exist:</span><br><span class="line">    csv_file = <span class="built_in">open</span>(<span class="string">&quot;/home/yr/PycharmProjects/nlp/output/adjustments.csv&quot;</span>, <span class="string">&quot;w&quot;</span>)</span><br><span class="line">    writer = csv.writer(csv_file, delimiter=<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">    writer.writerow([<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;Intent ID&#x27;</span>, <span class="string">&#x27;Q&#x27;</span>, <span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;category&#x27;</span>, <span class="string">&#x27;source&#x27;</span>, <span class="string">&#x27;time&#x27;</span>, <span class="string">&#x27;remark&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;Add Row&#x27;&#x27;&#x27;</span></span><br><span class="line">csv_file = <span class="built_in">open</span>(<span class="string">&quot;/home/yr/PycharmProjects/nlp/output/adjustments.csv&quot;</span>, <span class="string">&quot;a+&quot;</span>)</span><br><span class="line">writer = csv.writer(csv_file, delimiter=<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">new_row = [<span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, q, answer, category_id, <span class="string">&#x27;User Input&#x27;</span>, <span class="built_in">str</span>(datetime.datetime.now()), remark]</span><br></pre></td></tr></table></figure>
+
+<p>首先檢查 adjustments.csv 檔案是否存在，若不存在，就開個新檔，並把欄位名稱寫進去。<br>檔案已存在，就把紀錄直接寫到檔案的最後一筆。</p>
+<blockquote>
+<p>w: 開新檔 &amp; 寫入<br>a+: 用附加方式打開(資料會加在檔案最後，不會把前面的內容洗掉) &amp; 可讀寫</p>
+</blockquote>
+<h2 id="檢查寫檔是否成功"><a href="#檢查寫檔是否成功" class="headerlink" title="檢查寫檔是否成功"></a>檢查寫檔是否成功</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">success = writer.writerow(new_row)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> success &gt; <span class="number">6</span>:</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    new_row = [&#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;]</span></span><br><span class="line"><span class="string">    because len(new_raw) is 6</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    result[<span class="string">&#x27;success&#x27;</span>] = <span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    result[<span class="string">&#x27;success&#x27;</span>] = -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>這部分可能沒寫很好，未來可以再修正寫法。<br>主要是想以 new_row 的長度來決定是否有新增成功，判斷的時候又遇到一些問題，不太了解為何 <code>len([&#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;])</code> 的結果是 6，就先將錯就錯，若是長度有大於 5 個空字串的 list，就算他成功吧。</p>
+<h2 id="印出-JSON"><a href="#印出-JSON" class="headerlink" title="印出 JSON"></a>印出 JSON</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(json.dumps(result, ensure_ascii=<span class="literal">False</span>))</span><br></pre></td></tr></table></figure>
+
+<p>印出剛剛準備的 <code>result</code>，回饋機制的 API 就完成了!</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;new_question&quot;</span>: <span class="literal">true</span>, </span><br><span class="line">    <span class="attr">&quot;success&quot;</span>: <span class="number">1</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/%E8%AA%9E%E6%96%99%E5%BA%AB/" rel="tag"># 語料庫</a>
+              <a href="/tags/%E5%9B%9E%E9%A5%8B%E6%A9%9F%E5%88%B6/" rel="tag"># 回饋機制</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/10/04/%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8B-08-%E7%B9%AA%E8%A3%BD%E8%AA%9E%E6%96%99%E5%BA%AB%E6%A8%A1%E5%9E%8BHeatmap%E5%9C%96/" rel="prev" title="[語料庫模型] 08-繪製語料庫模型Heatmap圖">
+                  <i class="fa fa-chevron-left"></i> [語料庫模型] 08-繪製語料庫模型Heatmap圖
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/10/06/API-%E4%BD%BF%E7%94%A8-PHP-%E5%9F%B7%E8%A1%8C-Python-%E8%85%B3%E6%9C%AC/" rel="next" title="[API] 使用 PHP 執行 Python 腳本">
+                  [API] 使用 PHP 執行 Python 腳本 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

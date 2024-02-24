@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="這篇會寫如何設計 DDE 語料庫，還有 DDE 設計的邏輯。終於來到第五篇，這次截圖比較多，主要是我如何設定，直接看圖比文字說明清楚。 在 ASUS 平台註冊 APP有完成這個步驟才能呼叫「嘿，Zenbo，我要用 App name」">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Zenbo開發系列] 05-DDE回覆規則設計">
+<meta property="og:url" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="這篇會寫如何設計 DDE 語料庫，還有 DDE 設計的邏輯。終於來到第五篇，這次截圖比較多，主要是我如何設定，直接看圖比文字說明清楚。 在 ASUS 平台註冊 APP有完成這個步驟才能呼叫「嘿，Zenbo，我要用 App name」">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/console_config.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/info.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/project_info.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/flow.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/concepts1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/concepts2.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents2.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents3.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents4.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents5.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/input_output_contexts.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Plans1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Plans2.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/plan_graph.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/TTS.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/publish.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Test1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Test2.png">
+<meta property="article:published_time" content="2021-08-07T07:52:45.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.559Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="Zenbo">
+<meta property="article:tag" content="DDE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/console_config.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/","path":"2021/08/07/Zenbo開發系列-05-DDE回覆規則設計/","title":"[Zenbo開發系列] 05-DDE回覆規則設計"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Zenbo開發系列] 05-DDE回覆規則設計 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8-ASUS-%E5%B9%B3%E5%8F%B0%E8%A8%BB%E5%86%8A-APP"><span class="nav-number">1.</span> <span class="nav-text">在 ASUS 平台註冊 APP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-DDE-%E5%B0%88%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">建立 DDE 專案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E5%B0%88%E6%A1%88%E8%B3%87%E8%A8%8A"><span class="nav-number">2.1.</span> <span class="nav-text">設定專案資訊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E8%A8%88-DDE-%E8%A6%8F%E5%89%87"><span class="nav-number">2.2.</span> <span class="nav-text">設計 DDE 規則</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Concepts"><span class="nav-number">2.2.2.</span> <span class="nav-text">Concepts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Intents"><span class="nav-number">2.2.3.</span> <span class="nav-text">Intents</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Plans"><span class="nav-number">2.2.4.</span> <span class="nav-text">Plans</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Graph"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">Graph</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TTS"><span class="nav-number">2.2.5.</span> <span class="nav-text">TTS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BC%E5%B8%83-DDE"><span class="nav-number">3.</span> <span class="nav-text">發布 DDE</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tests"><span class="nav-number">4.</span> <span class="nav-text">Tests</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Zenbo開發系列] 05-DDE回覆規則設計
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-07 15:52:45" itemprop="dateCreated datePublished" datetime="2021-08-07T15:52:45+08:00">2021-08-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>這篇會寫如何設計 DDE 語料庫，還有 DDE 設計的邏輯。<br>終於來到第五篇，這次截圖比較多，主要是我如何設定，直接看圖比文字說明清楚。</p>
+<h1 id="在-ASUS-平台註冊-APP"><a href="#在-ASUS-平台註冊-APP" class="headerlink" title="在 ASUS 平台註冊 APP"></a>在 ASUS 平台註冊 APP</h1><p>有完成這個步驟才能呼叫「嘿，Zenbo，我要用 <code>App name</code>」</p>
+<span id="more"></span>
+<p>首先需要先建立一個 Android 專案，要特別注意 Package name 等下會用到，所以請盡量取個不會跟別人重複的。</p>
+<blockquote>
+<p>習慣上 Package name 會用公司會學校或學校的 domian 相反過來。<br>例如: google.com -&gt; com.google</p>
+</blockquote>
+<p>再來你還需要一個 ASUS 帳號，就可以在 <a target="_blank" rel="noopener" href="https://zenbo.asus.com/developer/console/">Console</a> 註冊自己的 APP。<br>依序輸入打 * 號的幾個欄位，送出後可以看到生成好的 App ID 和 App Key。APP ID 會在設定 DDE 專案的地方用到。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/console_config.png" alt="console_config"></p>
+<h1 id="建立-DDE-專案"><a href="#建立-DDE-專案" class="headerlink" title="建立 DDE 專案"></a>建立 DDE 專案</h1><p>從這邊 <a target="_blank" rel="noopener" href="https://zenbo.asus.com/developer/tools/ds-editor.jsp">DDE Editor</a> 建立一個新的 Project。</p>
+<h2 id="設定專案資訊"><a href="#設定專案資訊" class="headerlink" title="設定專案資訊"></a>設定專案資訊</h2><p>點選畫面上方的 info 設定<br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/info.png" alt="info"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/project_info.png" alt="project_info"></p>
+<ul>
+<li><strong>DDE Domain ID</strong>: 如果是第一次使用，需要先註冊 (Register) 一個 DDE Domain ID，創建好點選 All 可以看到你所有的 DDE Domain 和相應的 UUID。UUID 之後在 Zenbo 端會用到。這個欄位是下拉式選單，記得選擇剛註冊的 Domain 哦。</li>
+<li><strong>Developer App ID</strong>: 要選擇前面註冊好 Package name 的那組，下面的三個欄位會自動跟著填滿。<ul>
+<li>確定 Developer App ID(App ID)、Package Name(Package Name)、Brand(Brand Name)、App Name(App Name) 和上一步驟一樣</li>
+</ul>
+</li>
+<li><strong>Launch Activity</strong>: 填寫你 APP 首頁 Activity 完整的 package 路徑。</li>
+<li>剩下都預設就好~</li>
+</ul>
+<h2 id="設計-DDE-規則"><a href="#設計-DDE-規則" class="headerlink" title="設計 DDE 規則"></a>設計 DDE 規則</h2><p>各個 Basic Contexts 的說明可以看我的上一篇文章 <a href="../../07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-04-DDE%E7%B0%A1%E4%BB%8B">[Zenbo開發系列] 04-DDE簡介</a></p>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>因為我做的是一個 Q&amp;A 的聊天機器人，我希望使用使用者可以一直問完一題再問下一題，但是 Zenbo 一般問題流程會比較像樹狀結構，一條路走到底就結束了，沒辦法接下一題。</p>
+<p>所以我後來借用 Plans 的 Input&#x2F;Output Contexts 參數達到可以一題接一題的效果。流程大致如下圖。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/flow.jpg" alt="flow"></p>
+<h3 id="Concepts"><a href="#Concepts" class="headerlink" title="Concepts"></a>Concepts</h3><p>把同樣概念的詞，做成一個個 Concepts，我截幾個作範例。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/concepts1.png" alt="concepts1"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/concepts2.png" alt="concepts2"></p>
+<ul>
+<li>Concept ID: 這個 Concepts 的名稱，可以用中文。</li>
+<li>Instances: 先不用建，等下在 Concept 有用到的時候再加就好。</li>
+</ul>
+<h3 id="Intents"><a href="#Intents" class="headerlink" title="Intents"></a>Intents</h3><p>舉出一個「意圖」所有可能的說法。例如說，我今天想申請長照，就可以有很多種說法，「我要申請長照」、「申請長照」、「我想申請長照」、「如何申請長照」、「申請長照的流程」，盡可能把各種你想得到、想不到的講法都寫上去。</p>
+<blockquote>
+<p>官方文件:<br>人們可能使用不同句子來表達自己的意圖，因此開發人員有責任枚舉所有可能的句子。</p>
+</blockquote>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents1.png" alt="Intents1"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents2.png" alt="Intents2"></p>
+<p>圖中可以看到詞分種 3 種顏色，藍色、橘色、淺橘，代表不同的用意</p>
+<ul>
+<li><p>藍色<br>一定要出現的常數，而且一定要相同。像 applyLTC 的第一個例句中”我”，如果輸入的句子中是”你”，就比對不到，一定要是”我”。<br>可以在這裡建立新的 Concept，或是加入一個原有的 Concept<br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents3.png" alt="Intents3"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents4.png" alt="Intents4"></p>
+</li>
+<li><p>橘色<br>和 Concept 綁定的詞。</p>
+</li>
+<li><p>淺橘<br>和橘色一樣，但是 optional 的，代表輸入的句子中可以有也可以沒有這個詞。<br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Intents5.png" alt="Intents5"></p>
+</li>
+</ul>
+<h3 id="Plans"><a href="#Plans" class="headerlink" title="Plans"></a>Plans</h3><p>介紹幾個會用到的欄位:</p>
+<ul>
+<li>Input Context&#x2F;Output Contexts: 舉例，如果這個 Plan 的 Input Context 是 “A”，那他會接在其他 Output Context 是 “A” 的 Plan 後面</li>
+<li>Events: 是指要綁定哪個 Intent</li>
+<li>Actions<ul>
+<li>Condition: 可以設定一些條件，例如: 早上&#x2F;晚上要說什麼? 晴天&#x2F;雨天要說什麼?</li>
+<li>Task Type: Zenbo 要回應什麼內容。如果有多個 Task Type，會照順序唸，而不是隨機挑一個唸哦!<ul>
+<li>第二個欄位可以選擇 <code>Text</code> 或 <code>Reference</code>。Text 直接寫要回覆的內容。Reference 可對應到 TTS ID。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>首先，預設的這個 Plan <code>ThisPlanLaunchingThisApp</code>，在 Output Context 的地方填 <code>needAnyHelp</code>，再讓其他每一個 Plan 的 Input&#x2F;Output Context 也都填 <code>needAnyHelp</code>，對話可以就能像這個流程圖一樣，一直迴圈。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/input_output_contexts.jpg" alt="input_output_contexts"></p>
+<blockquote>
+<p>圓角方形:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent ID&#x2F;Plan ID</span><br><span class="line">  Intent 句子 </span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Plans1.png" alt="Plans1"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Plans2.png" alt="Plans2"></p>
+<h4 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h4><p>DDE Editor 提供了方便的視覺化工具，可以查看 Plan 之間的關聯。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/plan_graph.png" alt="plan_graph"></p>
+<h3 id="TTS"><a href="#TTS" class="headerlink" title="TTS"></a>TTS</h3><p>若有會重複使用的句子，可以寫到 TTS 重複利用哦。我只有一個 TTS，給大家參考。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/TTS.png" alt="TTS"></p>
+<h1 id="發布-DDE"><a href="#發布-DDE" class="headerlink" title="發布 DDE"></a>發布 DDE</h1><p>先 Publish 再 Deploy To Download Server，Zenbo 端才能下載。之後 DDE 還有修改的話，記得要再 Publish 和 Deploy 一次唷。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/publish.png" alt="publish"></p>
+<h1 id="Tests"><a href="#Tests" class="headerlink" title="Tests"></a>Tests</h1><p>基本上，上面的步驟做完就設定好了，接下來測試一下吧!<br>右側的 Tests 區，可以測試剛剛設計的流程。要開始這個對話流程，需要使用 UtteranceToLanuchApp Intent 的句子。</p>
+<p>所以要先用「我要用靜宜大學長照機器人」，下一句才能用「我要申請長照」。<br>選 All domains 或 Specified domains 都可以。</p>
+<p><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Test1.png" alt="Test1"><br><img src="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-05-DDE%E5%9B%9E%E8%A6%86%E8%A6%8F%E5%89%87%E8%A8%AD%E8%A8%88/Test2.png" alt="Test2"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/Zenbo/" rel="tag"># Zenbo</a>
+              <a href="/tags/DDE/" rel="tag"># DDE</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/07/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-04-DDE%E7%B0%A1%E4%BB%8B/" rel="prev" title="[Zenbo開發系列] 04-DDE簡介">
+                  <i class="fa fa-chevron-left"></i> [Zenbo開發系列] 04-DDE簡介
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/10/Zenbo%E9%96%8B%E7%99%BC%E7%B3%BB%E5%88%97-06-%E5%AE%89%E8%A3%9DDDE%E8%AA%9E%E6%96%99%E5%88%B0Zenbo/" rel="next" title="[Zenbo開發系列] 06-安裝DDE語料到Zenbo">
+                  [Zenbo開發系列] 06-安裝DDE語料到Zenbo <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

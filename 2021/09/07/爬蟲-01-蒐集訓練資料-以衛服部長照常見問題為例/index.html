@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="撰寫 Python 程式碼蒐集網路上的長照相關問答資訊，相比使用人工蒐集的方式，程式自動化蒐集方便又快速，也比較不會有缺漏。本研究將程式蒐集到的資料彙整成  CSV 格式，問答集來源包括：愛長照（愛長照編輯團隊，2017）、臺中市長期照顧管理中心（臺中市長期照顧管理中心，2020）、皇家護理集團（皇家護理集團，2019）、臺中市輔具資源整合網（臺中市輔具資源整合網，2015）、衛生福利部（衛生福利">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例">
+<meta property="og:url" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="撰寫 Python 程式碼蒐集網路上的長照相關問答資訊，相比使用人工蒐集的方式，程式自動化蒐集方便又快速，也比較不會有缺漏。本研究將程式蒐集到的資料彙整成  CSV 格式，問答集來源包括：愛長照（愛長照編輯團隊，2017）、臺中市長期照顧管理中心（臺中市長期照顧管理中心，2020）、皇家護理集團（皇家護理集團，2019）、臺中市輔具資源整合網（臺中市輔具資源整合網，2015）、衛生福利部（衛生福利">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/questions_src.jpg">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/qa_list.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/next_page.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/no_next.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/next_tag.png">
+<meta property="og:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/get_answer.png">
+<meta property="article:published_time" content="2021-09-07T15:54:12.000Z">
+<meta property="article:modified_time" content="2024-02-24T08:06:01.613Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="13th鐵人賽">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="爬蟲">
+<meta property="article:tag" content="BeautifulSoup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/questions_src.jpg">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/","path":"2021/09/07/爬蟲-01-蒐集訓練資料-以衛服部長照常見問題為例/","title":"[爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BC%89%E5%85%A5%E5%87%BD%E5%BC%8F%E5%BA%AB"><span class="nav-number">1.</span> <span class="nav-text">載入函式庫</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A8%99%E7%B6%B2%E9%A0%81"><span class="nav-number">2.</span> <span class="nav-text">目標網頁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E7%A8%8B%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">主程式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E5%BE%97%E5%95%8F%E9%A1%8C%E5%88%97%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">取得問題列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E7%90%86-Q-A"><span class="nav-number">3.2.</span> <span class="nav-text">整理 Q&amp;A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E9%A0%81"><span class="nav-number">3.3.</span> <span class="nav-text">下一頁</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Functions"><span class="nav-number">4.</span> <span class="nav-text">Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E5%BE%97%E7%B6%B2%E9%A0%81%E5%85%A7%E5%AE%B9"><span class="nav-number">4.1.</span> <span class="nav-text">取得網頁內容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E5%BE%97%E4%B8%8B%E4%B8%80%E9%A0%81%E7%9A%84-URL"><span class="nav-number">4.2.</span> <span class="nav-text">取得下一頁的 URL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E5%BE%97%E5%9B%9E%E7%AD%94"><span class="nav-number">4.3.</span> <span class="nav-text">取得回答</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B3%87%E6%96%99%E6%B8%85%E7%90%86-%E6%95%B4%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">資料清理&#x2F;整理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">6.</span> <span class="nav-text">結語</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [爬蟲] 01-蒐集訓練資料 以衛服部長照常見問題為例
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-09-07 23:54:12" itemprop="dateCreated datePublished" datetime="2021-09-07T23:54:12+08:00">2021-09-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-02-24 16:06:01" itemprop="dateModified" datetime="2024-02-24T16:06:01+08:00">2024-02-24</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>撰寫 Python 程式碼蒐集網路上的長照相關問答資訊，相比使用人工蒐集的方式，程式自動化蒐集方便又快速，也比較不會有缺漏。本研究將程式蒐集到的資料彙整成  CSV 格式，問答集來源包括：愛長照（愛長照編輯團隊，2017）、臺中市長期照顧管理中心（臺中市長期照顧管理中心，2020）、皇家護理集團（皇家護理集團，2019）、臺中市輔具資源整合網（臺中市輔具資源整合網，2015）、衛生福利部（衛生福利部，2017、2020）、宜蘭縣長期照護管理所（宜蘭縣長期照護管理所，2019），共六個來源。</p>
+<span id="more"></span>
+<p><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/questions_src.jpg" alt="questions_src"></p>
+<p>如果不想在自己電腦安裝 Pytnon 環境，或裝一些有的沒的套件，很推薦使用 Google 提供的 <a target="_blank" rel="noopener" href="https://colab.research.google.com/">Colab</a>。我真的覺得這個工具是佛心來著，可以免費使用 Google 的 GPU、TPU。程式又可以分段執行，也很適合用來 debug。</p>
+<p>不過我用 Colab 的最大原因是，因為爬蟲的過程會需要大量發送請求(request)，我很怕實驗室 IP 被學校計中或衛福部 ban 掉😂。</p>
+<p>進入正題！<br>今天選擇爬衛福部的資料做為範例，完整的程式碼可以參考: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/MOHW-QandA">https://github.com/dreambo4/MOHW-QandA</a></p>
+<h1 id="載入函式庫"><a href="#載入函式庫" class="headerlink" title="載入函式庫"></a>載入函式庫</h1><p>首先載入等下要用的 Library</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> csv</span><br></pre></td></tr></table></figure>
+
+<h1 id="目標網頁"><a href="#目標網頁" class="headerlink" title="目標網頁"></a>目標網頁</h1><p>今天的目標是: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/np-3972-201.html">https://1966.gov.tw/LTC/np-3972-201.html</a><br>我們要取得這 7 個分類裡的所有 Q&amp;A。因為只有 7 個分類，所以我只讓程式從每個分類的第一頁開始爬，而不是列出所有分類的這頁。也就是說，以下的這個動作要做 7 次。</p>
+<ol>
+<li>長期照顧特別扣除額: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-4641-201.html">https://1966.gov.tw/LTC/lp-4641-201.html</a></li>
+<li>長照服務法相關規定: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-3973-201.html">https://1966.gov.tw/LTC/lp-3973-201.html</a></li>
+<li>長照服務申請及評估: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-3974-201.html">https://1966.gov.tw/LTC/lp-3974-201.html</a></li>
+<li>長照給付支付基準: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-3975-201.html">https://1966.gov.tw/LTC/lp-3975-201.html</a></li>
+<li>預防延緩失能與照護計畫: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-3976-201.html">https://1966.gov.tw/LTC/lp-3976-201.html</a></li>
+<li>長照機構法人: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-4112-201.html">https://1966.gov.tw/LTC/lp-4112-201.html</a></li>
+<li>其他: <a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/lp-3977-201.html">https://1966.gov.tw/LTC/lp-3977-201.html</a></li>
+</ol>
+<p>可以發現網址的前半段都是相同的，因此 7 個 URL 可以寫成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">baseUrl = <span class="string">&quot;https://1966.gov.tw/LTC/&quot;</span></span><br><span class="line">url = baseUrl + <span class="string">&quot;lp-3977-201.html&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="主程式"><a href="#主程式" class="headerlink" title="主程式"></a>主程式</h1><p>主要的程式是這樣的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">qaList = []</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    soup = getContent(url)</span><br><span class="line">    questions = soup.find(<span class="string">&quot;div&quot;</span>, class_=<span class="string">&quot;List&quot;</span>).find_all(<span class="string">&quot;a&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> q <span class="keyword">in</span> questions:</span><br><span class="line">        qa = &#123;&#125;</span><br><span class="line">        answerUrl = q.get(<span class="string">&quot;href&quot;</span>)</span><br><span class="line"></span><br><span class="line">        qa[<span class="string">&#x27;url&#x27;</span>] = answerUrl</span><br><span class="line">        qa[<span class="string">&#x27;q&#x27;</span>] = q.get(<span class="string">&quot;title&quot;</span>)</span><br><span class="line">        qa[<span class="string">&#x27;a&#x27;</span>] = getAnswer(answerUrl)</span><br><span class="line">        <span class="built_in">print</span>(qa)</span><br><span class="line">        qaList.append(qa)</span><br><span class="line">    nextPageUrl = getNextPage(soup)</span><br><span class="line">    <span class="keyword">if</span> nextPageUrl <span class="keyword">is</span> <span class="literal">False</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    url = baseUrl + nextPageUrl</span><br></pre></td></tr></table></figure>
+
+<h2 id="取得問題列表"><a href="#取得問題列表" class="headerlink" title="取得問題列表"></a>取得問題列表</h2><p>首先 <code>getContent()</code> 取得該頁的完整內容。找到網頁中的內容，我們要的就是這個 <code>class=&quot;List&quot;</code> 的 div，並取得所有的 <code>&lt;a&gt;&lt;/a&gt;</code>，當中有我們需要的問題列表。</p>
+<blockquote>
+<p>在 BeautifulSoup，要取得 Html tag 有兩種方式: find、find_all，並且可以搭配使用</p>
+<ul>
+<li>find: 取得第一個標籤</li>
+<li>fing_all: 取得所有標籤</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/qa_list.png" alt="qa_list"></p>
+<p>得到的問題列表(<code>questions</code>)大概會長這樣，此時把 <code>href</code> 拿出來，便等於取得答案頁的 URL。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&lt;a href=&quot;https://1966.gov.tw/LTC/cp-3977-42249-201.html&quot; title=&quot;台灣的失智症長照服務資源量能？&quot;&gt;台灣的失智症長照服務資源量能？&lt;/a&gt;, &lt;a href=&quot;https://1966.gov.tw/LTC/cp-3977-42248-201.html&quot; title=&quot;「高齡政策白皮書」與「人口白皮書」，這兩者的關係為何？何者應優先適用？&quot;&gt;「高齡政策白皮書」與「人口白皮書」，這兩者的關係為何？何者應優先適用？&lt;/a&gt;, &lt;a href=&quot;https://1966.gov.tw/LTC/cp-3977-42245-201.html&quot; title=&quot;長照基金獎助之申請程序？&quot;&gt;長照基金獎助之申請程序？&lt;/a&gt;, &lt;a href=&quot;https://1966.gov.tw/LTC/cp-3977-42244-201.html&quot; title=&quot;有關長照服務資源不足地區的定義，建議重新檢討及訂定檢討年限？&quot;&gt;有關長照服務資源不足地區的定義，建議重新檢討及訂定檢討年限？&lt;/a&gt;]</span><br></pre></td></tr></table></figure>
+
+<h2 id="整理-Q-A"><a href="#整理-Q-A" class="headerlink" title="整理 Q&amp;A"></a>整理 Q&amp;A</h2><p>但是裡面還是有太多我們不需要的東西，因此再用個迴圈整理一下，把一個個的 <code>&lt;a&gt;</code> 變成 dict 的資料結構。</p>
+<blockquote>
+<p>BeautifulSoup 中取得 Html tag 中的內容，使用 <code>get()</code></p>
+</blockquote>
+<p><code>q.get(&quot;href&quot;)</code> 可取得 <code>&quot;https://1966.gov.tw/LTC/cp-3977-42249-201.html&quot;</code>。這是此問題的回答頁的連結，需要用<code>getAnswer()</code>再爬一次這個回答頁的內容，來解析內容。<br><code>q.get(&quot;title&quot;)</code> 可取得 <code>&quot;台灣的失智症長照服務資源量能？&quot;</code></p>
+<p>做成一個一個的 dict</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;url&#x27;</span>: <span class="string">&#x27;https://1966.gov.tw/LTC/cp-3977-42249-201.html&#x27;</span>, <span class="string">&#x27;q&#x27;</span>: <span class="string">&#x27;台灣的失智症長照服務資源量能？&#x27;</span>, <span class="string">&#x27;a&#x27;</span>: <span class="string">&#x27;一、為因應我國快速增加的老年及失智人口，延緩及減輕失智症對社會及家庭的衝擊，並提供失智症及其家庭所需的醫療及照護需求，本部於102年8月公布「失智症防治照護政策網領」，訂定兩大目標及七大面向，以作為我國失智症照護發展方向。並結合跨部會機關依據政策綱領七大面向提出行動方案32項，並依各工作項目之效益指標達成目標，以完善失智症照護防治體系。\n二、為提升失智症社區服務普及性，擴增失智症長照服務量能，已推動措施如下：\n(一)97年起失智者已納入長照十年計畫，失智症長者可經一般失能之基本日常生活活動能力(ADL)或臨床失智評估量表（CDR）評估，判定失能或失智程度，核定補助時數，按老人之需求，提供失智老人適切長照服務。長照服務個案中失智症患者約占9.7%，截至104年5月底，提供失智症長照服務個案約1萬5千多人。\n(二)完善社區照護網絡-多元、在地服務及家庭照顧者：\n1.已完成185個多元日照服務單位(日照中心159個、日托據點26個)，預計105年完成「一鄉鎮一日照」。\r\n2.失智專責服務：已設置日間照顧服務(17縣市共25處)、老人團體家屋(10個單位/83床) 、瑞智學堂(19縣市/60處)、失智症社區服務據點（28據點）、有失智症專區之機構 (41家，計1,317床；另規劃中7家239床)。\r\n3.建構家庭照顧者服務支持網絡：已設置失智症諮詢關懷專線，針對長照十年個案高風險家庭提供諮詢服務（1,141人/年)；提供家庭照顧者照顧訓練（908/場；17,137人次/年），及建立失智症互助家庭（2,451人次)。\n(三)充足長照服務人力：已完成醫事長照專業三個階段培訓課程並展開訓練，至104年8月已訓練約30,000人次；又為讓在地人照顧在地人，擴大培養在地長照人力，100-104年8月止約訓練3200人次。\n(四) 提升民眾對失智症防治及照護的認知：\n1.全民教育：拍攝紀錄片如「被遺忘的時光」、「昨日的記憶」、憶起愛相隨」、「照顧者心情故事-居家服務」、製作失智症衛教手冊、認識失智症單張；辦理學校、職場宣導講座等進行教育宣導。\r\n2.社區健康促進網絡如結合社區關懷據點（1,978個) 辦理老人健康促進活動（6,359場；超過10萬人)。\r\n3.建構高齡友善機構及城市方面：通過認證機構，醫院有105家、長照機構有3家及1家衛生所；並於22縣市全面推動高齡友善城市，讓 280萬之長者受惠。\n三、未來規劃：\n(一) 104年5月已完成長期照顧服務法立法，可依法設置長照基金，發展服務及人力資源。\r\n(二) 整合原有之長照十年計畫與長照服務網基礎，推動長期照顧服務量能提升計畫。&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;url&#x27;</span>: <span class="string">&#x27;https://1966.gov.tw/LTC/cp-3977-42248-201.html&#x27;</span>, <span class="string">&#x27;q&#x27;</span>: <span class="string">&#x27;「高齡政策白皮書」與「人口白皮書」，這兩者的關係為何？何者應優先適用？&#x27;</span>, <span class="string">&#x27;a&#x27;</span>: <span class="string">&#x27;(一) 人口政策白皮書所關注的人口議題包含了少子女化、高齡化、移民，高齡社會白皮書主要針對高齡者及未來高齡社會提出四大願景與相關具體行動措施。雖兩者皆有針對高齡化提出相關對策，但為因應人口老化迅速、家庭與生活型態改變與社會價值變遷的挑戰，我國必須針對當今社會之高齡多元需求，同時參考國際經驗與趨勢，必須即早提出更前瞻且整體性的政策規劃，以滿足我國高齡者能夠享有健康生活、幸福家庭、活力社會與友善環境，達到延長國人健康年數、減少失能老年人口的目標，並且整體提升高齡者生活幸福感。\r\n\xa0(二) 人口政策白皮書與高齡社會白皮書兩者並無衝突與適用之優先順序，高齡社會白皮書亦有融合人口政策白皮書之理念，並特別針對未來高齡人口需求延伸提出高齡政策之前瞻性架構與規劃，以共同實踐政府政策之願景。&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;url&#x27;</span>: <span class="string">&#x27;https://1966.gov.tw/LTC/cp-3977-42245-201.html&#x27;</span>, <span class="string">&#x27;q&#x27;</span>: <span class="string">&#x27;長照基金獎助之申請程序？&#x27;</span>, <span class="string">&#x27;a&#x27;</span>: <span class="string">&#x27;1.本部長照十年計畫2.0-106年度補助計畫，106年部分，本部社家署已於106年1月12日以衛授家字第1060800004號函送本部「106年度運用社會福利基金辦理長照十年計畫2.0補助項目及基準」，將補助案件分為主軸計畫、整合型計畫及專案計畫等三類，可依該三類之補助項目、基準、作業程序辦理。\r\n2.107年（含）以後及非屬上開長照十年計畫2.0-106年度補助計畫經費之申請程序與相關作業規範，本部將另訂長照基金獎助作業要點。&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;url&#x27;</span>: <span class="string">&#x27;https://1966.gov.tw/LTC/cp-3977-42244-201.html&#x27;</span>, <span class="string">&#x27;q&#x27;</span>: <span class="string">&#x27;有關長照服務資源不足地區的定義，建議重新檢討及訂定檢討年限？&#x27;</span>, <span class="string">&#x27;a&#x27;</span>: <span class="string">&#x27;1.現行長照服務資源不足地區，係依本部99年及103年辦理長照服務資源盤點所規劃之長照服務網區域劃分。\r\n2.本辦法第三條已明定「至少每五年辦理長照服務資源供需之調查」。\r\n3.將依前項辦理之調查結果，定期檢討長照服務資源不足地區之定義。&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="下一頁"><a href="#下一頁" class="headerlink" title="下一頁"></a>下一頁</h2><p>好了，這頁讀完了，下一頁怎麼辦，總不會還要再改網址重跑吧?<br>當然不是，下方可以看到有下一頁的按鈕，我們需要做的是，取得下一頁的 URL，一樣取得問題列表，直到最後一頁(沒有下一頁)。</p>
+<p><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/next_page.png" alt="next_page"><br><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/no_next.png" alt="no_next"></p>
+<h1 id="Functions"><a href="#Functions" class="headerlink" title="Functions"></a>Functions</h1><h2 id="取得網頁內容"><a href="#取得網頁內容" class="headerlink" title="取得網頁內容"></a>取得網頁內容</h2><p>根據 URL，取得該頁的完整 Html。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getContent</span>(<span class="params">url</span>):</span></span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    soup = BeautifulSoup(response.text, <span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> soup </span><br></pre></td></tr></table></figure>
+
+<h2 id="取得下一頁的-URL"><a href="#取得下一頁的-URL" class="headerlink" title="取得下一頁的 URL"></a>取得下一頁的 URL</h2><p>大概的意思是，一直找有沒有下一頁的箭頭，有的話就取得下一頁的連結。沒有箭頭，就表示沒有下一頁，回傳 False。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getNextPage</span>(<span class="params">htmlContent</span>):</span></span><br><span class="line">    <span class="keyword">if</span> htmlContent.find(<span class="string">&#x27;a&#x27;</span>, class_=<span class="string">&quot;icon-angle-right&quot;</span>) <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> htmlContent.find(<span class="string">&#x27;a&#x27;</span>, class_=<span class="string">&quot;icon-angle-right&quot;</span>).get(<span class="string">&quot;href&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/next_tag.png" alt="next_tag"></p>
+<h2 id="取得回答"><a href="#取得回答" class="headerlink" title="取得回答"></a>取得回答</h2><p>根據前面取得問題列表時得到的答案頁 URL，再爬蟲一次，取得相應的答案。</p>
+<blockquote>
+<p>BeautifulSoup 中 <code>get_text()</code> 可以取得標籤中間的文字(不含標籤)</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getAnswer</span>(<span class="params">answerUrl</span>):</span></span><br><span class="line">    answerSoup = getContent(answerUrl)</span><br><span class="line">    answer = answerSoup.find(<span class="string">&quot;div&quot;</span>, class_=<span class="string">&quot;user_edit&quot;</span>).find(<span class="string">&quot;p&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> answer.get_text()</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/09/07/%E7%88%AC%E8%9F%B2-01-%E8%92%90%E9%9B%86%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99-%E4%BB%A5%E8%A1%9B%E6%9C%8D%E9%83%A8%E9%95%B7%E7%85%A7%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E7%82%BA%E4%BE%8B/get_answer.png" alt="get_answer"></p>
+<h1 id="資料清理-整理"><a href="#資料清理-整理" class="headerlink" title="資料清理&#x2F;整理"></a>資料清理&#x2F;整理</h1><p>我最後用來建模型的 CSV 是還有經過整理的，使用 Excel 或 LibreOffice Calc 可以方便的去除重複資料和編號。</p>
+<p>CSV檔案連結:<br><a target="_blank" rel="noopener" href="https://gitlab.com/graduate_lab415/nlp/-/blob/master/docs/fixed_file_1622789141_remove_duplicate_labeled_renumber.csv">https://gitlab.com/graduate_lab415/nlp/-/blob/master/docs/fixed_file_1622789141_remove_duplicate_labeled_renumber.csv</a></p>
+<table>
+<thead>
+<tr>
+<th>欄位</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>流水號</td>
+</tr>
+<tr>
+<td>Intent ID</td>
+<td>[已棄用] 這個欄位可以略過，這是之前與 Zenbo DDE 對應用的</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>問題</td>
+</tr>
+<tr>
+<td>A</td>
+<td>答案</td>
+</tr>
+<tr>
+<td>url</td>
+<td>問答組合的出處</td>
+</tr>
+<tr>
+<td>category</td>
+<td>紀錄問答組合屬於何種類別，編號對應會在之後的文章介紹</td>
+</tr>
+</tbody></table>
+<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>今天就到這，謝謝大家。明天的主題是有關於，將這些爬下來的內容存成 CSV 檔，方便後續使用。明天見！</p>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li>Beautiful Soup 4.9.0 documentation. (2021). Beautiful Soup Documentation. Retrieved from <a target="_blank" rel="noopener" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">https://www.crummy.com/software/BeautifulSoup/bs4/doc/</a></li>
+<li>宜蘭縣長期照護管理所（2019）。長照常見問題及回應。檢自：<a target="_blank" rel="noopener" href="https://ltc.ilshb.gov.tw/subject/15/view/42%E3%80%82">https://ltc.ilshb.gov.tw/subject/15/view/42。</a></li>
+<li>皇家護理集團（2019）。皇家Q&amp;A。檢自：<a target="_blank" rel="noopener" href="https://www.royalnursinghome.com.tw/%e8%ad%b7%e7%90%86%e4%b9%8b%e5%ae%b6/%E3%80%82">https://www.royalnursinghome.com.tw/%e8%ad%b7%e7%90%86%e4%b9%8b%e5%ae%b6/。</a></li>
+<li>愛長照編輯團隊（2017）。簡單搞懂「長照 2.0」－常見 QA 與新增服務項目。檢自：<a target="_blank" rel="noopener" href="https://www.ilong-termcare.com/Article/Detail/1533%E3%80%82">https://www.ilong-termcare.com/Article/Detail/1533。</a></li>
+<li>臺中市長期照顧管理中心（2020）。長照常見問與答 (109.10 更新)。檢自：<a target="_blank" rel="noopener" href="http://ltcc2.health.taichung.gov.tw/files/15-1000-1042,c89-1.php%E3%80%82">http://ltcc2.health.taichung.gov.tw/files/15-1000-1042,c89-1.php。</a></li>
+<li>臺中市輔具資源整合網（2015）。常見問題。檢自：<a target="_blank" rel="noopener" href="https://www.tatrc-taichung.com.tw/QuestionAnswer?SearchForm.QuestionAnswerType=%E5%B8%B8%E8%A6%8B%E5%95%8F%E9%A1%8C%E3%80%82">https://www.tatrc-taichung.com.tw/QuestionAnswer?SearchForm.QuestionAnswerType=%e5%b8%b8%e8%a6%8b%e5%95%8f%e9%a1%8c。</a></li>
+<li>衛生福利部（2017）。衛福部長照專區 常見問題。檢自：<a target="_blank" rel="noopener" href="https://1966.gov.tw/LTC/np-3972-201.html%E3%80%82">https://1966.gov.tw/LTC/np-3972-201.html。</a></li>
+<li>衛生福利部（2020）。衛生福利 e 寶箱 長期照顧。檢自：<a target="_blank" rel="noopener" href="https://www.mohw.gov.tw/cp-88-208-1-18.html%E3%80%82">https://www.mohw.gov.tw/cp-88-208-1-18.html。</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/13th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 13th鐵人賽</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E7%88%AC%E8%9F%B2/" rel="tag"># 爬蟲</a>
+              <a href="/tags/BeautifulSoup/" rel="tag"># BeautifulSoup</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/05/%E9%95%B7%E7%85%A7%E5%B0%8F%E5%B9%AB%E6%89%8B-%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B%E7%B0%A1%E4%BB%8B/" rel="prev" title="長照小幫手-系統架構簡介">
+                  <i class="fa fa-chevron-left"></i> 長照小幫手-系統架構簡介
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/14/%E7%88%AC%E8%9F%B2-02-%E5%84%B2%E5%AD%98%E7%88%AC%E8%9F%B2%E8%B3%87%E6%96%99-CSV%E6%A0%BC%E5%BC%8F/" rel="next" title="[爬蟲] 02-儲存爬蟲資料-CSV格式">
+                  [爬蟲] 02-儲存爬蟲資料-CSV格式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
