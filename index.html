@@ -183,7 +183,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/07/01/Trace-Code-02-%E4%BD%BF%E7%94%A8-Layout-Inspector-%E5%B0%8B%E6%89%BE%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8-Layout/" class="post-title-link" itemprop="url">[Trace Code] 02 使用 Layout Inspector 尋找當前所在 Layout</a>
+          <a href="/2024/07/01/Trace-Code-02-%E4%BD%BF%E7%94%A8-Layout-Inspector-%E5%B0%8B%E6%89%BE%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8-Layout/" class="post-title-link" itemprop="url">[Trace Code] 02-使用Layout Inspector尋找當前所在Layout</a>
         </h2>
 
         <div class="post-meta-container">
@@ -201,7 +201,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-07-11 20:59:13" itemprop="dateModified" datetime="2024-07-11T20:59:13+08:00">2024-07-11</time>
+        <time title="修改時間：2024-07-11 22:46:40" itemprop="dateModified" datetime="2024-07-11T22:46:40+08:00">2024-07-11</time>
       </span>
 
   
@@ -225,10 +225,8 @@
 <li>可以快速找到顯示錯誤資訊的元件，進而查詢錯誤原因。</li>
 <li>確認元件當前的 Attribute，例如：textSize, textColor, background, visibility…等。</li>
 </ul>
-<p>發現畫面上有一個應該要顯示文字的 TextView 不見了，這時候有幾種可能</p>
-<ol>
-<li>TextView 寬高為 0</li>
-<li>TextView 文字顏色與背景相同
+<p>在Android開發中，有時我們會遇到畫面上某些元件未如預期顯示的問題。例如，一個應該顯示文字的TextView突然消失了。這時，我們該如何診斷問題呢？</p>
+<p>我製作了一個範例，其中應該顯示三個TextView，但實際上一個都看不到。在不偷看 Layout 程式碼的狀況下，試試你能找出問題嗎？</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/07/01/Trace-Code-02-%E4%BD%BF%E7%94%A8-Layout-Inspector-%E5%B0%8B%E6%89%BE%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8-Layout/#more" rel="contents">
