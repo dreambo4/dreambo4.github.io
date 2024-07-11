@@ -105,7 +105,7 @@ tags:
 - 發現問題後，第一步就是找到事發地點
 - 幫助我在收到一個需求和bug時，可以快速定位，知道當前的Layout、Activity、Fragment 程式在哪裡
 - 通常以下幾種方式會混著用
-    - **Day - [Trace Code] 使用 Profiler 檢查當前所在 Activity/Fragment**
+    - **Day01 - [Trace Code] 使用 Profiler 檢查當前所在 Activity/Fragment**
         - 快速縮小範圍，如果有幾個Activity/Fragment長得很像，那麼使用 Profiler 就能很快確定究竟是哪一個
         - 缺點：只能找到Activity或Fragment，有時候要找尋的目標程式，可能是包在元件或Adapter裡
     - **Day - [Trace Code] 使用 Layout Inspector 找所在 Layout**
@@ -197,3 +197,19 @@ tags:
     - **Day - [發佈] Varient**
         - Gradel 配置
         - package, url config xml
+
+
+---
+
+template:
+# 情境
+
+# 工具介紹
+## 使用步驟
+
+## 工具優缺
+
+# 參考資料
+- 優點
+
+- 缺點
