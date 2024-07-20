@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="情境在 Android 開發中，我們經常會遇到需要重複輸入或複製貼上某些程式碼片段的情況。這不僅耗時，還容易出錯。而 Android Studio 提供了一個強大的功能——程式碼模板，它可以幫助我們大大提高開發效率。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Coding] 01-Android Studio快速程式碼模板">
+<meta property="og:url" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="情境在 Android 開發中，我們經常會遇到需要重複輸入或複製貼上某些程式碼片段的情況。這不僅耗時，還容易出錯。而 Android Studio 提供了一個強大的功能——程式碼模板，它可以幫助我們大大提高開發效率。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/liveTemplateSample.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/%E9%A0%90%E5%AE%9A%E7%BE%A9%E7%9A%84%E6%A8%A1%E6%9D%BF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/%E6%96%B0%E5%A2%9E%E6%A8%A1%E6%9D%BF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/inLayout.png">
+<meta property="article:published_time" content="2024-07-07T14:34:11.000Z">
+<meta property="article:modified_time" content="2024-07-20T06:59:17.855Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="程式碼模板">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/liveTemplateSample.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/","path":"2024/07/07/Coding-01-Android-Studio-快速程式碼模板/","title":"[Coding] 01-Android Studio快速程式碼模板"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Coding] 01-Android Studio快速程式碼模板 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">工具介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%AF%84%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">常用範例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%A9%9F"><span class="nav-number">2.2.</span> <span class="nav-text">使用步驟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E8%87%AA%E8%A8%82%E6%A8%A1%E6%9D%BF"><span class="nav-number">2.3.</span> <span class="nav-text">新增自訂模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%84%AA%E7%BC%BA"><span class="nav-number">2.4.</span> <span class="nav-text">工具優缺</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Coding] 01-Android Studio快速程式碼模板
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-07-07 22:34:11" itemprop="dateCreated datePublished" datetime="2024-07-07T22:34:11+08:00">2024-07-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-07-20 14:59:17" itemprop="dateModified" datetime="2024-07-20T14:59:17+08:00">2024-07-20</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>在 Android 開發中，我們經常會遇到需要重複輸入或複製貼上某些程式碼片段的情況。這不僅耗時，還容易出錯。而 Android Studio 提供了一個強大的功能——程式碼模板，它可以幫助我們大大提高開發效率。</p>
+<span id="more"></span>
+
+<h1 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h1><p>Live Templates 是由 IntelliJ 提供的功能，可以快速插入預定義的程式碼模板。IntelliJ 內建就已經提供了許多常用模板，如迴圈、條件判斷、變數宣告等。而 Android Studio 又多了更多 Android 相關的 Templates。</p>
+<p>舉例來說，只要輸入 <code>logd</code> 並按下 <code>Enter鍵</code> 就，會自動出現 Log.d 的模板程式碼。善用這些快速模板，可以加快開發速度。</p>
+<p><img src="/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/liveTemplateSample.png" alt="Live Template 示意"></p>
+<h2 id="常用範例"><a href="#常用範例" class="headerlink" title="常用範例"></a>常用範例</h2><table>
+<thead>
+<tr>
+<th align="left">輸入縮寫</th>
+<th align="left">自動補齊程式碼模板</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">logd</td>
+<td align="left">Log.d(TAG, “onCreate: “)</td>
+</tr>
+<tr>
+<td align="left">toast</td>
+<td align="left">Toast.makeText(, “”, Toast.LENGTH_SHORT).show()</td>
+</tr>
+</tbody></table>
+<h2 id="使用步驟"><a href="#使用步驟" class="headerlink" title="使用步驟"></a>使用步驟</h2><p>但你有想過這些好用的補齊功能都設定在哪裡嗎?</p>
+<ol>
+<li><p>打開 <code>Setting &gt; Editor &gt; Live Templates</code></p>
+</li>
+<li><p>在這裡，你可以看到所有預定義的模板!</p>
+</li>
+</ol>
+<p><img src="/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/%E9%A0%90%E5%AE%9A%E7%BE%A9%E7%9A%84%E6%A8%A1%E6%9D%BF.png" alt="預定義的模板"></p>
+<h2 id="新增自訂模板"><a href="#新增自訂模板" class="headerlink" title="新增自訂模板"></a>新增自訂模板</h2><p>當內建模板不夠用時，我們也可以自行新增常用的程式碼片段</p>
+<ol>
+<li>點擊「+」新增程式碼模板</li>
+<li>Abbreviation: 輸入模板的簡稱，這也是之後要使用該模板的縮寫</li>
+<li>Description: 輸入模板的說明</li>
+<li>Template text: 輸入模板內容</li>
+<li>Change: 勾選此模板的適用範圍。每個模板的適用範圍都不同，就像 Kotlin 的程式模板不應出現在 XML 一樣。</li>
+</ol>
+<p>舉個例子，在使用 Constraint Layout 時，我們常遇到要將元件的四邊都拉到 parent。這時就能新增一個模板，解決重複輸入的問題。設定方式可以參考下圖：</p>
+<p><img src="/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/%E6%96%B0%E5%A2%9E%E6%A8%A1%E6%9D%BF.png" alt="新增模板"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">app:layout_constraintEnd_toEndOf=&quot;parent&quot;</span><br><span class="line">app:layout_constraintStart_toStartOf=&quot;parent&quot;</span><br><span class="line">app:layout_constraintTop_toTopOf=&quot;parent&quot;</span><br></pre></td></tr></table></figure>
+
+<p>新增完成後，在 Layout 中，我就只需要輸入 <code>pppp</code>，就能自動補齊程式碼。</p>
+<p><img src="/2024/07/07/Coding-01-Android-Studio-%E5%BF%AB%E9%80%9F%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/inLayout.png" alt="在layout中使用"></p>
+<h2 id="工具優缺"><a href="#工具優缺" class="headerlink" title="工具優缺"></a>工具優缺</h2><ul>
+<li><p>優點</p>
+<ul>
+<li>大幅提高開發效率</li>
+<li>減少重複性工作</li>
+<li>降低程式碼錯誤率</li>
+</ul>
+</li>
+<li><p>缺點</p>
+<ul>
+<li>需要一定時間學習和記憶模板縮寫</li>
+<li>過度依賴可能會影響對程式碼的理解</li>
+</ul>
+</li>
+</ul>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/idea/using-live-templates.html">https://www.jetbrains.com/help/idea/using-live-templates.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%A8%A1%E6%9D%BF/" rel="tag"># 程式碼模板</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/01/Trace-Code-02-%E4%BD%BF%E7%94%A8-Layout-Inspector-%E5%B0%8B%E6%89%BE%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8-Layout/" rel="prev" title="[Trace Code] 02-使用Layout Inspector尋找當前所在Layout">
+                  <i class="fa fa-chevron-left"></i> [Trace Code] 02-使用Layout Inspector尋找當前所在Layout
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
