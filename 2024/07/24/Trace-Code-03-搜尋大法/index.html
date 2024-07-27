@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://dreambo4.github.io/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/FindInFiles.png">
 <meta property="og:image" content="http://dreambo4.github.io/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/practice.png">
 <meta property="article:published_time" content="2024-07-24T01:34:39.000Z">
-<meta property="article:modified_time" content="2024-07-25T17:36:36.362Z">
+<meta property="article:modified_time" content="2024-07-27T10:27:51.023Z">
 <meta property="article:author" content="dreambo4">
 <meta property="article:tag" content="Android">
 <meta property="article:tag" content="16th鐵人賽">
@@ -214,7 +214,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-07-26 01:36:36" itemprop="dateModified" datetime="2024-07-26T01:36:36+08:00">2024-07-26</time>
+        <time title="修改時間：2024-07-27 18:27:51" itemprop="dateModified" datetime="2024-07-27T18:27:51+08:00">2024-07-27</time>
       </span>
 
   
@@ -241,31 +241,30 @@
 </ul>
 <p>在偵錯模式下，工具可以幫助我們快速找到問題的發生地。但更多時候，客戶回報問題只會有錄影或截圖。這時候要找問題發生地，就只能使用強大的搜尋功能啦～</p>
 <span id="more"></span>
-<p>這次可以使用這個範例來練習</p>
-<p>GitHub: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/NavigationDemo">https://github.com/dreambo4/NavigationDemo</a></p>
-<ul>
-<li>找畫面上固定不會變動的字來搜尋(ex: 標題文字)，通常就能很快找到 Layout或使用的字串資源</li>
-</ul>
+
+<p>這次可以使用這個範例來練習<br>GitHub: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/NavigationDemo">https://github.com/dreambo4/NavigationDemo</a></p>
 <h1 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h1><p>我常用的搜尋工具主要有兩個</p>
 <ol>
 <li>Search Everywhere<ul>
 <li>快捷鍵：連點兩下 Shift</li>
 <li>快速搜尋並開啟 Class</li>
-<li>不一定需要輸入完整，”HomeActivity” 只需要輸入 “HA”就能找到<br><img src="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/SearchEverywhere.png" alt="Search Everywhere"></li>
+<li>不一定需要輸入完整，”HomeActivity” 只需要輸入 “HA”就能找到</li>
+<li><img src="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/SearchEverywhere.png" alt="Search Everywhere"></li>
 </ul>
 </li>
 <li>Find in Files<ul>
-<li>快捷鍵：Cmd + Shift + F (Windows: Ctl + Shift + F)</li>
+<li>快捷鍵：Cmd + Shift + F (Windows: Ctrl + Shift + F)</li>
 <li>可以針對字串搜尋</li>
 <li>右上角的 File mask 可以只針對某副檔名搜尋。例如你很確定這個字串應該是在 layout 中使用，可以限定 <code>*.xml</code>；或是很確定有某個註解關鍵字在程式中，可以限定 <code>*.kt</code> 或 <code>*.java</code>。</li>
-<li>漏斗符號：可以過濾是否為字串或註解的內容。<br><img src="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/FindInFiles.png" alt="Find in Files"></li>
+<li>漏斗符號：可以過濾是否為字串或註解的內容。</li>
+<li><img src="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/FindInFiles.png" alt="Find in Files"></li>
 </ul>
 </li>
 </ol>
-<h2 id="使用步驟"><a href="#使用步驟" class="headerlink" title="使用步驟"></a>使用步驟</h2><p>這邊分享幾個我平常搜尋過程中的想法</p>
+<h2 id="使用步驟"><a href="#使用步驟" class="headerlink" title="使用步驟"></a>使用步驟</h2><p>這邊分享幾個我平常搜尋過程中的思路</p>
 <p>以這個APP畫面為例，如果要你使用搜尋法找到這個頁面，你會搜尋什麼關鍵字呢？</p>
 <p><img src="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/practice.png" alt="Practice"></p>
-<h3 id="第一種-使用-Search-Everywhere"><a href="#第一種-使用-Search-Everywhere" class="headerlink" title="第一種 - 使用 Search Everywhere"></a>第一種 - 使用 Search Everywhere</h3><p>首先，這是登入畫面，所以我會先用 Search Everywhere 搜尋 <code>Login</code> 相關的頁面。幸運的話，或許可以找到 <code>LoginActivity</code> 或 <code>LoginFragment</code>。</p>
+<h3 id="第一種-使用-Search-Everywhere"><a href="#第一種-使用-Search-Everywhere" class="headerlink" title="第一種 - 使用 Search Everywhere"></a>第一種 - 使用 Search Everywhere</h3><p>首先，這是登入畫面，所以我會先用 Search Everywhere 搜尋 <code>Login</code> 相關的頁面。幸運的話，很快就可以找到 <code>LoginActivity</code> 或 <code>LoginFragment</code>。</p>
 <h3 id="第二種-使用-Find-in-Files"><a href="#第二種-使用-Find-in-Files" class="headerlink" title="第二種 - 使用 Find in Files"></a>第二種 - 使用 Find in Files</h3><p>若頁面不是可以直觀猜到名稱的，那麼我會使用 Find in Files 搜尋關鍵字，這時挑選合適的關鍵字就很重要了。</p>
 <ol>
 <li>我會先淘汰 A、E，因為這些詞很常出現在註解或是 API 欄位的描述中</li>
@@ -273,7 +272,7 @@
 <li>再來 B、D、G，這三個詞在 APP 中很可能有其他入口，或在其他頁面也有使用，所以也不會是第一首選</li>
 <li>剩下 C、F，這兩個看起來比較像只有在登入頁才會出現的字串</li>
 </ol>
-<p>關鍵就是盡量挑選「固定不變動」、「獨一無二」的字串。</p>
+<p>關鍵就是盡量挑選「固定不變動」、「獨一無二」的字串。只要找對關鍵字，很快就能順藤摸瓜找到 Layout，再找到相關 Class。</p>
 <h2 id="工具優缺"><a href="#工具優缺" class="headerlink" title="工具優缺"></a>工具優缺</h2><ul>
 <li>優點<ul>
 <li>手邊沒有偵錯工具時，依然可以使用</li>
