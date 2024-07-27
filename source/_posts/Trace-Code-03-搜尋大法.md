@@ -33,14 +33,14 @@ GitHub: [https://github.com/dreambo4/NavigationDemo](https://github.com/dreambo4
    - ![Find in Files](FindInFiles.png)
 
 ## 使用步驟
-這邊分享幾個我平常搜尋過程中的想法
+這邊分享幾個我平常搜尋過程中的思路
 
 以這個APP畫面為例，如果要你使用搜尋法找到這個頁面，你會搜尋什麼關鍵字呢？
 
 ![Practice](practice.png)
 
 ### 第一種 - 使用 Search Everywhere
-首先，這是登入畫面，所以我會先用 Search Everywhere 搜尋 `Login` 相關的頁面。幸運的話，或許可以找到 `LoginActivity` 或 `LoginFragment`。
+首先，這是登入畫面，所以我會先用 Search Everywhere 搜尋 `Login` 相關的頁面。幸運的話，很快就可以找到 `LoginActivity` 或 `LoginFragment`。
 
 ### 第二種 - 使用 Find in Files
 若頁面不是可以直觀猜到名稱的，那麼我會使用 Find in Files 搜尋關鍵字，這時挑選合適的關鍵字就很重要了。
