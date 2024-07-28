@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="情境閱讀程式碼是工程師的日常，當程式碼規模日漸成長，許多程式不可避免的被封裝在底層&#x2F;共用層。當問題被藏的越底層，追查問題就會變得更困難。 為此，Android Studio 也有提供方便的工具讓開發者能夠輕鬆觀察物件的繼承關係。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Trace Code] 04-觀察物件繼承關係">
+<meta property="og:url" content="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="情境閱讀程式碼是工程師的日常，當程式碼規模日漸成長，許多程式不可避免的被封裝在底層&#x2F;共用層。當問題被藏的越底層，追查問題就會變得更困難。 為此，Android Studio 也有提供方便的工具讓開發者能夠輕鬆觀察物件的繼承關係。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/position.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/demo.png">
+<meta property="article:published_time" content="2024-07-27T03:11:27.000Z">
+<meta property="article:modified_time" content="2024-07-28T06:15:38.426Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="Trace Code">
+<meta property="article:tag" content="繼承">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/position.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/","path":"2024/07/27/Trace-Code-04-觀察物件繼承關係/","title":"[Trace Code] 04-觀察物件繼承關係"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Trace Code] 04-觀察物件繼承關係 | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">工具介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%84%AA%E7%BC%BA"><span class="nav-number">2.1.</span> <span class="nav-text">工具優缺</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Trace Code] 04-觀察物件繼承關係
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-07-27 11:11:27" itemprop="dateCreated datePublished" datetime="2024-07-27T11:11:27+08:00">2024-07-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-07-28 14:15:38" itemprop="dateModified" datetime="2024-07-28T14:15:38+08:00">2024-07-28</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>閱讀程式碼是工程師的日常，當程式碼規模日漸成長，許多程式不可避免的被封裝在底層&#x2F;共用層。當問題被藏的越底層，追查問題就會變得更困難。</p>
+<p>為此，Android Studio 也有提供方便的工具讓開發者能夠輕鬆觀察物件的繼承關係。</p>
+<span id="more"></span>
+
+<p>本文推薦自備具有多層繼承結構的專案。或是可以使用我的 android-basics-kotlin-mars-photos-app，但我的範例只有一層繼承，較無法凸顯物件多層繼承的複雜關係。<br>Github: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/android-basics-kotlin-mars-photos-app">https://github.com/dreambo4/android-basics-kotlin-mars-photos-app</a></p>
+<h1 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h1><p>Hierarchy 是由 IntelliJ 提供的功能，透過這個工具開發者可以檢查類別、方法和呼叫的層次結構，並探索原始碼的架構。工具通常在側邊工具列，但我建議直接使用快捷鍵。<br><img src="/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/position.png" alt="position"></p>
+<p>快捷鍵(MacOS)：</p>
+<ul>
+<li>Type Hierarchy: Ctrl + H</li>
+<li>Method Hierarchy: Shift + Cmd + H</li>
+<li>Call Hierarchy: Ctrl + Opt + H</li>
+</ul>
+<p>只需對著 Class 或 Method&#x2F;Function 直接按下快捷鍵，就可以可以看到物件繼承的關係。有時候，某個 function 不一定是在當下這個 class 被呼叫，而是在更底層的 parrent class。這個工具就能幫助我們省去一層一層點擊，尋找繼承關係或是 function 呼叫時機的功夫。</p>
+<p><img src="/2024/07/27/Trace-Code-04-%E8%A7%80%E5%AF%9F%E7%89%A9%E4%BB%B6%E7%B9%BC%E6%89%BF%E9%97%9C%E4%BF%82/demo.png" alt="demo"></p>
+<h2 id="工具優缺"><a href="#工具優缺" class="headerlink" title="工具優缺"></a>工具優缺</h2><ul>
+<li><p>優點</p>
+<ul>
+<li>快速視覺化查看複雜的繼承結構</li>
+<li>節省追蹤 Function 定義和呼叫的時間</li>
+<li>提供清晰的程式碼結構概覽</li>
+</ul>
+</li>
+<li><p>缺點</p>
+<ul>
+<li>初次使用時可能需要一點時間學習</li>
+</ul>
+</li>
+</ul>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/idea/2024.1/viewing-structure-and-hierarchy-of-the-source-code.html?reference.toolWindows.hierarchy">https://www.jetbrains.com/help/idea/2024.1/viewing-structure-and-hierarchy-of-the-source-code.html?reference.toolWindows.hierarchy</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/Trace-Code/" rel="tag"># Trace Code</a>
+              <a href="/tags/%E7%B9%BC%E6%89%BF/" rel="tag"># 繼承</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/24/Trace-Code-03-%E6%90%9C%E5%B0%8B%E5%A4%A7%E6%B3%95/" rel="prev" title="[Trace Code] 03-搜尋大法">
+                  <i class="fa fa-chevron-left"></i> [Trace Code] 03-搜尋大法
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
