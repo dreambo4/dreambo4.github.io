@@ -120,16 +120,16 @@ tags:
     - 通常會由設計提供 Figma、Zepline 等設計圖
     - 在拉畫面要注意的通常是對齊與顏色是否正確、大小手機跑版滑動範圍
     
-    - **Day05 - [UI] 確認對齊、Padding、點擊範圍**
+    - **Day05 - [UI] 通過UI設計師嚴格的檢查-排版**
         - 「顯示版面配置界限」，手機上簡易檢查 UI 是否對齊、點擊範圍、padding
         - Layout Inspector，檢查元件長寬、visibility
-    - **Day06 - [UI] Constraint Layout Basline**
+    - **Day06 - [UI] 通過UI設計師嚴格的檢查-文字Baseline**
         - 有時候不能完全照 Figma 上的 Padding 或 Margin，會有中文和英數字型 Baseline 不一樣高的問題
-    - **Day07 - [UI] 滴管工具**
+    - **Day07 - [UI] UI設計師不在家，自立自強用滴管取顏色**
         - 有時候設計圖沒有 Figma，只有一張 PNG，又沒給顏色的狀況下，只能用滴管工具，Mac 內建滴管工具，分享哪個選項最準
-    - **Day08 - [UI] Android Studio 內建的 Color Picker**
+    - **Day08 - [UI] 使用 Android Studio 內建的 Color Picker 設定顏色**
         - 好處：透明度百分比直接換算 16 進制
-    - **Day09 - [UI] 大小手機問題**
+    - **Day09 - [UI] Android的原罪-大小不一的裝置**
         - 要注意小手機的滑動範圍，Layout有使用絕對高，需要特別注意
         - 借 Firebase 手機，https://firebase.google.com/docs/test-lab/usage-quotas-pricing?hl=zh-tw#device-streaming 
 - 追查 API
