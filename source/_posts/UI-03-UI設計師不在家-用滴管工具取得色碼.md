@@ -43,6 +43,7 @@ GitHub: [https://github.com/dreambo4/NavigationDemo](https://github.com/dreambo4
   - 在沒有原始色碼的狀況下，取得最接近的色碼
 - 缺點
   - 測色計結果受限於，圖片解析度、色塊大小
+  - 若原始色碼帶有透明度，由測色計無法得知
 
 # 參考資料
 - 數位測色計使用手冊: https://support.apple.com/zh-tw/guide/digital-color-meter/welcome/mac
