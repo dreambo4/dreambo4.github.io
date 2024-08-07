@@ -11,6 +11,8 @@ tags:
 # 情境
 Android 手機，廠商多、機型多、長寬比例也各式各樣，確保 UI 在不同裝置上的一致性是一大挑戰。本文將介紹兩個避免 UI 跑版的重要概念。
 
+Demo 程式：GitHub: [https://github.com/dreambo4/LayoutInspectorDemo](https://github.com/dreambo4/LayoutInspectorDemo)
+
 ## 由內而外構建 UI
 > Do: 外層 View 的大小應隨著內層 View 的寬高縮放
 > Don't: 不應由外而內的設定 View 的寬高
