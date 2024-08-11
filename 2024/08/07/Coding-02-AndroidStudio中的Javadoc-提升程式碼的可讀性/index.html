@@ -23,12 +23,12 @@
 <meta name="description" content="情境註解是為了讓人閱讀的，無論是其他同事還是兩個禮拜後的自己。因此，註解必須清晰地描述方法的參數和作用。本文將著重於如何在 Android Studio 寫好用的註解，和方便快速的建立註解。至於 Javadoc 詳細的撰寫規範可以參考文末資料(How to Write Doc Comments for the Javadoc Tool#A Style Guide)。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[Coding] 02-Android Studio 中的 Javadoc-提升程式碼的可讀性">
-<meta property="og:url" content="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/index.html">
+<meta property="og:url" content="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
 <meta property="og:description" content="情境註解是為了讓人閱讀的，無論是其他同事還是兩個禮拜後的自己。因此，註解必須清晰地描述方法的參數和作用。本文將著重於如何在 Android Studio 寫好用的註解，和方便快速的建立註解。至於 Javadoc 詳細的撰寫規範可以參考文末資料(How to Write Doc Comments for the Javadoc Tool#A Style Guide)。">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/%E6%96%87%E4%BB%B6%E8%A8%BB%E8%A7%A3%E6%A8%A1%E6%9D%BF.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/%E6%96%87%E4%BB%B6%E8%A8%BB%E8%A7%A3%E6%A8%A1%E6%9D%BF.png">
 <meta property="article:published_time" content="2024-08-07T08:30:35.000Z">
 <meta property="article:modified_time" content="2024-08-11T14:01:44.487Z">
 <meta property="article:author" content="dreambo4">
@@ -36,14 +36,14 @@
 <meta property="article:tag" content="16th鐵人賽">
 <meta property="article:tag" content="註解">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png">
 
 
-<link rel="canonical" href="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/">
+<link rel="canonical" href="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/","path":"2024/08/07/Coding-02-Android寫註解/","title":"[Coding] 02-Android Studio 中的 Javadoc-提升程式碼的可讀性"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/","path":"2024/08/07/Coding-02-AndroidStudio中的Javadoc-提升程式碼的可讀性/","title":"[Coding] 02-Android Studio 中的 Javadoc-提升程式碼的可讀性"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>[Coding] 02-Android Studio 中的 Javadoc-提升程式碼的可讀性 | YR's Blog</title>
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -246,9 +246,9 @@
 <p>但要注意的是，只有文件註解的寫法，才會被解析成 Documentation。</p>
 <ul>
 <li>實作註解，比較適合用於程式碼中的說明。</li>
-<li>文件註解，適合寫類別、成員變數、方法的說明。<br><img src="/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png" alt="兩種註解寫法"></li>
+<li>文件註解，適合寫類別、成員變數、方法的說明。<br><img src="/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/%E5%85%A9%E7%A8%AE%E8%A8%BB%E8%A7%A3%E5%AF%AB%E6%B3%95.png" alt="兩種註解寫法"></li>
 </ul>
-<p>在 Android Studio 很方便的是，只要輸入 <code>/**</code>，按下 <code>Enter</code> 鍵，就會自動自動建立文件註解模板。<br><img src="/2024/08/07/Coding-02-Android%E5%AF%AB%E8%A8%BB%E8%A7%A3/%E6%96%87%E4%BB%B6%E8%A8%BB%E8%A7%A3%E6%A8%A1%E6%9D%BF.png" alt="文件註解模板"></p>
+<p>在 Android Studio 很方便的是，只要輸入 <code>/**</code>，按下 <code>Enter</code> 鍵，就會自動自動建立文件註解模板。<br><img src="/2024/08/07/Coding-02-AndroidStudio%E4%B8%AD%E7%9A%84Javadoc-%E6%8F%90%E5%8D%87%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7/%E6%96%87%E4%BB%B6%E8%A8%BB%E8%A7%A3%E6%A8%A1%E6%9D%BF.png" alt="文件註解模板"></p>
 <h1 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h1><p>另外，若專案的 Javadoc 寫得夠完整，還可參考這篇教學，將整個專案的文件註解匯出。</p>
 <ul>
 <li>How to create JavaDoc using Android Studio without R and BuildConfig?: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/29162820/how-to-create-javadoc-using-android-studio-without-r-and-buildconfig">https://stackoverflow.com/questions/29162820/how-to-create-javadoc-using-android-studio-without-r-and-buildconfig</a></li>
