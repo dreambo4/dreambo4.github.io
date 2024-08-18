@@ -1,5 +1,5 @@
 ---
-title: '[追查API] 01-出事的是哪隻API'
+title: '[追查API] 01-出事的是哪隻API-Network Inspector'
 date: 2024-08-11T22:10:55+08:00
 tags:
 - 16th鐵人賽
