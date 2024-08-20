@@ -20,17 +20,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="情境有時候看著設計師拉的 Figma 拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。 Demo 程式：GitHub: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;LayoutInspectorDemo">
+<meta name="description" content="情境有時候看著設計師稿拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。 Demo 程式：GitHub: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;LayoutInspectorDemo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[UI] 02-通過UI設計師嚴格的檢查-文字Baseline">
 <meta property="og:url" content="http://dreambo4.github.io/2024/07/30/UI-02-%E9%80%9A%E9%81%8EUI%E8%A8%AD%E8%A8%88%E5%B8%AB%E5%9A%B4%E6%A0%BC%E7%9A%84%E6%AA%A2%E6%9F%A5-%E6%96%87%E5%AD%97Baseline/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
-<meta property="og:description" content="情境有時候看著設計師拉的 Figma 拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。 Demo 程式：GitHub: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;LayoutInspectorDemo">
+<meta property="og:description" content="情境有時候看著設計師稿拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。 Demo 程式：GitHub: https:&#x2F;&#x2F;github.com&#x2F;dreambo4&#x2F;LayoutInspectorDemo">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/3/39/Typography_Line_Terms.svg">
 <meta property="og:image" content="http://dreambo4.github.io/2024/07/30/UI-02-%E9%80%9A%E9%81%8EUI%E8%A8%AD%E8%A8%88%E5%B8%AB%E5%9A%B4%E6%A0%BC%E7%9A%84%E6%AA%A2%E6%9F%A5-%E6%96%87%E5%AD%97Baseline/ConstraintLayoutDemo.png">
 <meta property="article:published_time" content="2024-07-30T09:02:09.000Z">
-<meta property="article:modified_time" content="2024-08-01T18:46:11.918Z">
+<meta property="article:modified_time" content="2024-08-20T10:24:52.025Z">
 <meta property="article:author" content="dreambo4">
 <meta property="article:tag" content="Android">
 <meta property="article:tag" content="16th鐵人賽">
@@ -215,7 +215,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-08-02 02:46:11" itemprop="dateModified" datetime="2024-08-02T02:46:11+08:00">2024-08-02</time>
+        <time title="修改時間：2024-08-20 18:24:52" itemprop="dateModified" datetime="2024-08-20T18:24:52+08:00">2024-08-20</time>
       </span>
 
   
@@ -235,7 +235,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>有時候看著設計師拉的 Figma 拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。</p>
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>有時候看著設計師稿拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。</p>
 <p>Demo 程式：GitHub: <a target="_blank" rel="noopener" href="https://github.com/dreambo4/LayoutInspectorDemo">https://github.com/dreambo4/LayoutInspectorDemo</a></p>
 <span id="more"></span>
 
