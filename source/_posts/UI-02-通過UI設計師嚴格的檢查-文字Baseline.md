@@ -10,7 +10,7 @@ tags:
 ---
 
 # 情境
-有時候看著設計師拉的 Figma 拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。
+有時候看著設計師稿拉完 TextView，View 對齊了但字好像沒有真的對齊。這是因為中文字和英數字 Baseline 不一樣高。在使用 ConstrainLayout 拉 TextView 的時候不妨多注意看看。
 
 Demo 程式：GitHub: [https://github.com/dreambo4/LayoutInspectorDemo](https://github.com/dreambo4/LayoutInspectorDemo)
 <!-- more -->
