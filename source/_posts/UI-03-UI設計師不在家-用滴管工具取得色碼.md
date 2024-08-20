@@ -10,7 +10,7 @@ tags:
 ---
 
 # 情境
-當團隊的設計師不在，你沒有 Figma 或 Zeplin 等方便的工具，只有一張 設計圖.png，要如何取得設計圖上的色碼，順利完成今天的開發任務呢？
+當團隊的設計師不在，你沒有 Figma 或 Zeplin 等方便的工具，只有一張 `設計圖.png`，要如何取得設計圖上的色碼，順利完成今天的開發任務呢？
 
 這個專案用的色碼比較多，可以拿這個測試。
 GitHub: [https://github.com/dreambo4/NavigationDemo](https://github.com/dreambo4/NavigationDemo)
