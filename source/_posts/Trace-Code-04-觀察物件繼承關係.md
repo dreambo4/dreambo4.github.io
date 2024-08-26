@@ -3,9 +3,9 @@ title: '[Trace Code] 04-觀察物件繼承關係'
 date: 2024-07-27T19:11:27+08:00
 tags:
 - 16th鐵人賽
-- Android
+- Android Studio
 - Trace Code
-- 繼承
+- Hierarchy
 ---
 
 # 情境

@@ -7,13 +7,16 @@ tags:
 - Trace Code
 ---
 
+接下來的主題，是 Trace Code。平常除了拉 UI，最常遇到的就是找問題。發現問題，第一步就是找到事發地，接下來 4 篇會介紹我常用來找 Code 的 4 個方法，通常我都是混著用的。接下來，讓我們一個個介紹吧～
+
 # 情境
 - 當收到需求，需要在某一頁多加一個頁籤時，我們需要快速找到需要調整的 Activity 或 Fragment。
+<!-- more -->
 - 當某個畫面由多個 Fragment 組合而成時，如何確認畫面上有哪些 Fragment？
 - 有多個相像的 Activity 或 Fragment，如何快速確認當下顯示的是哪一個？
 
 要如何快速搜尋到當前 Activity 或 Fragment 以修改程式呢？Profiler 可以幫助我們即時觀察當前頁面。
-<!-- more -->
+
 我做了一個 Demo APP，歡迎下載自行嘗試。
 GitHub: [https://github.com/dreambo4/NavigationDemo](https://github.com/dreambo4/NavigationDemo)
 

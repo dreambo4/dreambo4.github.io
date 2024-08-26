@@ -3,7 +3,7 @@ title: '[Coding] 01-Android Studio快速程式碼模板'
 date: 2024-07-07T22:34:11
 tags:
 - 16th鐵人賽
-- Android
+- Android Studio
 - 程式碼模板
 ---
 

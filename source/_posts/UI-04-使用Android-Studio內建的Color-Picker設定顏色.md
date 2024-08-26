@@ -3,7 +3,7 @@ title: '[UI] 04-使用 Android Studio 內建的 Color Picker 設定顏色'
 date: 2024-08-03T17:42:02+08:00
 tags:
 - 16th鐵人賽
-- Android
+- Android Studio
 - 色碼
 - 透明度
 - 滴管工具
