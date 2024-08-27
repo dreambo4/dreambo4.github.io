@@ -20,30 +20,33 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="情境寫程式除了要會寫 Log，還要會找 Log、看 Log、整理 Log。今天會介紹幾個我寫 Log 的原則，希望對你也有幫助。 Logcat 介紹Android Studio 在 2022 年的電鰻版(Electric Eel)，為 Logcat 工具做了大更新。以往一閃退(APP關閉)，就看不到 Log 的問題修正了。不同的篩選條件也能組合使用，雖然比以前的版本學習難度更高，但熟練後就能更精準">
+<meta name="description" content="情境寫程式除了要會寫 Log，還要會找 Log、看 Log、整理 Log。今天會介紹幾個我寫 Log 的原則，希望對你也有幫助。 Logcat 介紹Android Studio 在 2022 年的 Electric Eel 版，為 Logcat 工具做了大更新。修正了以往一閃退(APP關閉)，就看不到 Log 的問題，不同的篩選條件也能組合使用。雖然比以前的版本學習難度更高，但熟練後就能更精準的篩">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Debug-01-Logcat">
-<meta property="og:url" content="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/index.html">
+<meta property="og:title" content="[Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log">
+<meta property="og:url" content="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
-<meta property="og:description" content="情境寫程式除了要會寫 Log，還要會找 Log、看 Log、整理 Log。今天會介紹幾個我寫 Log 的原則，希望對你也有幫助。 Logcat 介紹Android Studio 在 2022 年的電鰻版(Electric Eel)，為 Logcat 工具做了大更新。以往一閃退(APP關閉)，就看不到 Log 的問題修正了。不同的篩選條件也能組合使用，雖然比以前的版本學習難度更高，但熟練後就能更精準">
+<meta property="og:description" content="情境寫程式除了要會寫 Log，還要會找 Log、看 Log、整理 Log。今天會介紹幾個我寫 Log 的原則，希望對你也有幫助。 Logcat 介紹Android Studio 在 2022 年的 Electric Eel 版，為 Logcat 工具做了大更新。修正了以往一閃退(APP關閉)，就看不到 Log 的問題，不同的篩選條件也能組合使用。雖然比以前的版本學習難度更高，但熟練後就能更精準的篩">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/%E7%AF%A9%E9%81%B8%E6%A2%9D%E4%BB%B6.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/%E7%AF%A9%E9%81%B8%E6%A2%9D%E4%BB%B6.png">
 <meta property="article:published_time" content="2024-08-26T02:42:33.000Z">
-<meta property="article:modified_time" content="2024-08-27T14:28:22.170Z">
+<meta property="article:modified_time" content="2024-08-27T15:07:21.407Z">
 <meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="Android Studio">
+<meta property="article:tag" content="Log">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png">
 
 
-<link rel="canonical" href="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/">
+<link rel="canonical" href="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/","path":"2024/08/26/Debug-01-Logcat/","title":"Debug-01-Logcat"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/","path":"2024/08/26/Debug-01-AndroidStudioLogcat使用技巧：寫好Log、找對Log/","title":"[Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Debug-01-Logcat | YR's Blog</title>
+<title>[Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log | YR's Blog</title>
   
   <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
@@ -119,7 +122,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Logcat-%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">Logcat 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B-Log"><span class="nav-number">2.1.</span> <span class="nav-text">看 Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%AB-Log"><span class="nav-number">2.2.</span> <span class="nav-text">寫 Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5-Log"><span class="nav-number">2.3.</span> <span class="nav-text">查 Log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%84%E5%90%88%E4%BD%BF%E7%94%A8"><span class="nav-number">2.3.1.</span> <span class="nav-text">組合使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">3.</span> <span class="nav-text">後記</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Logcat-%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">Logcat 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B-Log"><span class="nav-number">2.1.</span> <span class="nav-text">看 Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%AB-Log"><span class="nav-number">2.2.</span> <span class="nav-text">寫 Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5-Log"><span class="nav-number">2.3.</span> <span class="nav-text">查 Log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%84%E5%90%88%E4%BD%BF%E7%94%A8"><span class="nav-number">2.3.1.</span> <span class="nav-text">組合使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">3.</span> <span class="nav-text">小結</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -139,7 +142,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-count">73</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -179,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/26/Debug-01-Logcat/">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -192,7 +195,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Debug-01-Logcat
+          [Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log
         </h1>
 
         <div class="post-meta-container">
@@ -210,7 +213,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-08-27 22:28:22" itemprop="dateModified" datetime="2024-08-27T22:28:22+08:00">2024-08-27</time>
+        <time title="修改時間：2024-08-27 23:07:21" itemprop="dateModified" datetime="2024-08-27T23:07:21+08:00">2024-08-27</time>
       </span>
 
   
@@ -231,13 +234,13 @@
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>寫程式除了要會寫 Log，還要會找 Log、看 Log、整理 Log。今天會介紹幾個我寫 Log 的原則，希望對你也有幫助。</p>
-<h1 id="Logcat-介紹"><a href="#Logcat-介紹" class="headerlink" title="Logcat 介紹"></a>Logcat 介紹</h1><p>Android Studio 在 2022 年的電鰻版(Electric Eel)，為 Logcat 工具做了大更新。以往一閃退(APP關閉)，就看不到 Log 的問題修正了。不同的篩選條件也能組合使用，雖然比以前的版本學習難度更高，但熟練後就能更精準的篩選需要的 Log。</p>
+<h1 id="Logcat-介紹"><a href="#Logcat-介紹" class="headerlink" title="Logcat 介紹"></a>Logcat 介紹</h1><p>Android Studio 在 2022 年的 Electric Eel 版，為 Logcat 工具做了大更新。修正了以往一閃退(APP關閉)，就看不到 Log 的問題，不同的篩選條件也能組合使用。雖然比以前的版本學習難度更高，但熟練後就能更精準的篩選需要的 Log。</p>
 <span id="more"></span>
 
 <blockquote>
 <p>Android Studio 的「Logcat」視窗可即時顯示裝置記錄，協助您對應用程式進行偵錯。這些記錄包括您以 Log 類別加到應用程式中的訊息、在 Android 執行的服務的訊息，或在執行垃圾收集等作業時顯示的系統訊息等。只要應用程式擲回例外狀況，Logcat 就會顯示訊息，然後提供內有該行程式碼連結的相關堆疊追蹤記錄。</p>
 </blockquote>
-<h2 id="看-Log"><a href="#看-Log" class="headerlink" title="看 Log"></a>看 Log</h2><p><img src="/2024/08/26/Debug-01-Logcat/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png" alt="Logcat介面功能介紹"><br><strong>介面功能介紹：</strong></p>
+<h2 id="看-Log"><a href="#看-Log" class="headerlink" title="看 Log"></a>看 Log</h2><p><img src="/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/Logcat%E4%BB%8B%E9%9D%A2%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9.png" alt="Logcat介面功能介紹"><br><strong>介面功能介紹：</strong></p>
 <ul>
 <li>分頁：可以新增多個分頁，追蹤不同 Filter</li>
 <li>裝置：有多個裝置時，可以切換裝置</li>
@@ -250,11 +253,11 @@
 <li>截圖、螢幕錄影：兩個很方便的小功能，讓你不需要在手機上截圖或錄影再傳到電腦上，一且都可以在電腦操作解決</li>
 </ul>
 <h2 id="寫-Log"><a href="#寫-Log" class="headerlink" title="寫 Log"></a>寫 Log</h2><ul>
-<li><p><strong>無意義的 Log 不留</strong><br>在開發期間，寫了一堆 Debug 專用的 Log 在所難免，但無意義的 Log 不准上 Git。舉例：你可能會把一個 ArrayList 的內容用迴圈一個一個 Log 出來，但這些內容只在你當下開發時有用，對於後續維護沒有意義的 Log 不需要保留。</br></br>這邊提供一個小技巧，通常寫 Debug 用的 Log，我都會用自己的專用的 Tag，例如：<code>YRYR</code>，再推 Code 之前我就會全域的搜尋一下 <code>YRYR</code>，確定是否有遺漏未刪除的 Log。(建議你也可以自己定一個喔)</p>
+<li><p><strong>無意義的 Log 不留</strong><br>在開發期間，寫了一堆 Debug 用的 Log 在所難免，但請勿將這些無意義的 Log 推上 Git。舉例：你可能會把一個 ArrayList 的內容用迴圈一個一個 Log 出來，但這些內容只在你當下開發時有用，對於後續維護沒有意義的 Log 不需要保留。</br></br>建議大家設定一個專屬的 Tag(如 <code>YRYR</code>)來標示臨時的 Log，在推 Code 之前全域的搜尋一下，確定是否有遺漏未刪除的 Log。(建議你也可以自己定一個喔)</p>
 </li>
-<li><p><strong>保留需要明確知道當下狀態的 Log</strong><br>通常我只會保留需要明確知道當下狀態的 Log，例如：打 API 的 Request&#x2F;Reponse、存檔成功&#x2F;失敗。</p>
+<li><p><strong>保留關鍵狀態 Log</strong><br>通常我只會保留需要明確知道當下狀態的 Log，例如：打 API 的 Request&#x2F;Reponse、存檔成功&#x2F;失敗。</p>
 </li>
-<li><p><strong>Tag 取檔名、物件名</strong><br>通常去定要保留的 Log，我們會取檔名或物件名當作 Tag。因為當 Log 一多，若 Tag 的名稱取的很隨意或重複，根本無從找起 Log 是從哪裡被印出來的。</p>
+<li><p><strong>Tag 取檔名、物件名</strong><br>通常確定要保留的 Log，會取檔名或物件名當作 Tag，這樣即使 Log 變多，也能快速定位 Log 來源。</p>
 </li>
 </ul>
 <h2 id="查-Log"><a href="#查-Log" class="headerlink" title="查 Log"></a>查 Log</h2><p>Debug 期間，我寫的所有 Log，基本上都會用我專用的 Tag。<br>所以我的 Filter 會寫這樣：</p>
@@ -268,12 +271,12 @@
 
 <h3 id="組合使用"><a href="#組合使用" class="headerlink" title="組合使用"></a>組合使用</h3><p>若今天有兩組資料想同時查看，也可以使用 <code>分割視窗</code> 功能。通常我會下兩組 Tag，<code>YRYR1</code>、<code>YRYR2</code>，那麼左右的分割視窗可以個別看兩個標籤：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 視窗一</span><br><span class="line">package:mine tag:YRYR1</span><br><span class="line"># 視窗二</span><br><span class="line">package:mine tag:YRYR2</span><br></pre></td></tr></table></figure>
-<p>會分別將兩個標籤定成 <code>YRYR1</code>、<code>YRYR2</code>，是因為若當我需要一個視窗同時看到兩個 Tag 的時候，也是可以的：這因為 <code>tag:YRYR</code> 是指 Tag 包含 <code>YRYR</code>，所以想要兩個標籤一起看，也是可以的：</p>
+<p>會分別將兩個標籤定成 <code>YRYR1</code>、<code>YRYR2</code>，是因為若當我需要一個視窗同時看到兩個 Tag 的時候，就能使用這樣的搜尋條件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">package:mine tag:YRYR</span><br></pre></td></tr></table></figure>
 <div class="note info"><p>tag:YRYR 是指 Tag 包含 “YRYR” 的標籤，自然也包含 “YRYR1”、”YRYR2”</p>
 </div>
 
-<h1 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h1><p>本篇著重於介紹專案中的 Log 規則與篩選應用，條件篩選還有很多進階的寫法，例如下圖中的 <code>=</code>、<code>~</code>、<code>-</code>。建議有空把 <a target="_blank" rel="noopener" href="https://developer.android.com/studio/debug/logcat?hl=zh-tw">官方文件</a> 讀一遍。<br><img src="/2024/08/26/Debug-01-Logcat/%E7%AF%A9%E9%81%B8%E6%A2%9D%E4%BB%B6.png" alt="篩選條件"></p>
+<h1 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h1><p>本篇著重於介紹專案中的 Log 規則與篩選應用，條件篩選還有很多進階的寫法，例如下圖中的 <code>=</code>、<code>~</code>、<code>-</code>。建議有空把 <a target="_blank" rel="noopener" href="https://developer.android.com/studio/debug/logcat?hl=zh-tw">官方文件</a> 讀一遍。<br><img src="/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/%E7%AF%A9%E9%81%B8%E6%A2%9D%E4%BB%B6.png" alt="篩選條件"></p>
 <h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
 <li>使用 Logcat 查看記錄: <a target="_blank" rel="noopener" href="https://developer.android.com/studio/debug/logcat?hl=zh-tw">https://developer.android.com/studio/debug/logcat?hl=zh-tw</a></li>
 </ul>
@@ -285,6 +288,11 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/Android-Studio/" rel="tag"># Android Studio</a>
+              <a href="/tags/Log/" rel="tag"># Log</a>
+          </div>
 
         
 
