@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -161,6 +161,105 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/07/29/UI-01-%E9%80%9A%E9%81%8EUI%E8%A8%AD%E8%A8%88%E5%B8%AB%E5%9A%B4%E6%A0%BC%E7%9A%84%E6%AA%A2%E6%9F%A5-%E6%8E%92%E7%89%88-%E9%BB%9E%E6%93%8A%E7%AF%84%E5%9C%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/07/29/UI-01-%E9%80%9A%E9%81%8EUI%E8%A8%AD%E8%A8%88%E5%B8%AB%E5%9A%B4%E6%A0%BC%E7%9A%84%E6%AA%A2%E6%9F%A5-%E6%8E%92%E7%89%88-%E9%BB%9E%E6%93%8A%E7%AF%84%E5%9C%8D/" class="post-title-link" itemprop="url">[UI] 01-通過UI設計師嚴格的檢查-排版&點擊範圍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-07-29 10:54:54" itemprop="dateCreated datePublished" datetime="2024-07-29T10:54:54+08:00">2024-07-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-08-18 21:22:39" itemprop="dateModified" datetime="2024-08-18T21:22:39+08:00">2024-08-18</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>第二次參賽，這次不講 Code，來講工具！</p>
+<p>工作以來，發現很多我自己常用的小技巧或 Debug 工具，其實有些是同事不知道的。我打算用這30天的文章，紀錄平時工作常遇到的情境，再說明我的如何使用這些工具解決問題。</p>
+<p>文章預計分為幾個主題(順序和內容可能會調整)</p>
+<ul>
+<li>UI</li>
+<li>Trace Code</li>
+<li>Coding</li>
+<li>追查 API</li>
+<li>Debug</li>
+<li>版本控管</li>
+<li>Demo</li>
+<li>發佈</li>
+</ul>
+<p>首先，讓我們從和 User 息息相關的 UI 開始吧！</p>
+<h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>不確定是否各位的團隊都有這個流程。我的團隊在開發前期，會先由設計師依照與需求單位討論的結果，畫出設計彩圖。軟體通常使用Figma、Zeplin。通常設計會跑在開發前面，但時程趕的時候，有時候會併進一段時間。開發完成，若時間上還有餘裕，就會讓設計進來 Review 各位拉的 UI，位置對齊、字體、顏色、框線、陰影、圓角，只要給他們足夠多的時間，一定能指出你的 UI 有哪裡不符合設計圖。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/07/29/UI-01-%E9%80%9A%E9%81%8EUI%E8%A8%AD%E8%A8%88%E5%B8%AB%E5%9A%B4%E6%A0%BC%E7%9A%84%E6%AA%A2%E6%9F%A5-%E6%8E%92%E7%89%88-%E9%BB%9E%E6%93%8A%E7%AF%84%E5%9C%8D/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -907,91 +1006,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/10/14/%E7%B5%90%EF%A5%81-%E7%B8%BD%E6%95%B4%E7%90%86%E8%88%87%E5%BB%BA%E8%AD%B0/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2021/10/13/Android-APP-07-MVVM%E4%B8%AD%E7%9A%84RecyclerView%E8%88%87Adapter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="dreambo4">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YR's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/13/Android-APP-07-MVVM%E4%B8%AD%E7%9A%84RecyclerView%E8%88%87Adapter/" class="post-title-link" itemprop="url">[Android APP] 07-MVVM中的RecyclerView與Adapter</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">發表於</span>
-
-      <time title="創建時間：2021-10-13 22:22:29" itemprop="dateCreated datePublished" datetime="2021-10-13T22:22:29+08:00">2021-10-13</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-02-24 23:33:27" itemprop="dateModified" datetime="2024-02-24T23:33:27+08:00">2024-02-24</time>
-      </span>
-
-  
-    <span class="post-meta-item" title="閱讀次數">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">閱讀次數：</span>
-      <span class="firestore-visitors-count"></span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>鐵人賽快到尾聲了，今天想介紹在控制 RecyclerView 中回饋按鈕時，遇到的狀況。想想，這篇好像應該和前一篇順序對調，畢竟是先有這些糾結，才有後面自己歸納出的那些寫法。所以先暫時忘掉昨天的寫法，回到 MVVM 的初學者吧。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/13/Android-APP-07-MVVM%E4%B8%AD%E7%9A%84RecyclerView%E8%88%87Adapter/#more" rel="contents">
                 閱讀全文 &raquo;
               </a>
             </div>
