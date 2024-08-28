@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="情境Log 和 Toast 都很常被用來印出資訊，本篇會比較兩個物件的使用差異，分別介紹適合的情境。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Debug] 02-在 Debug 時，靈活運用 Log &amp; Toast">
+<meta property="og:url" content="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="情境Log 和 Toast 都很常被用來印出資訊，本篇會比較兩個物件的使用差異，分別介紹適合的情境。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/Toast.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/%E5%AF%A6%E9%9A%9B%E6%A1%88%E4%BE%8B.png">
+<meta property="article:published_time" content="2024-08-27T07:11:44.000Z">
+<meta property="article:modified_time" content="2024-08-28T16:01:56.305Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="Log">
+<meta property="article:tag" content="Toast">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/Toast.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/","path":"2024/08/27/Debug-02-在Debug時-靈活運用Log-Toast/","title":"[Debug] 02-在 Debug 時，靈活運用 Log & Toast"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Debug] 02-在 Debug 時，靈活運用 Log & Toast | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Log-%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">Log 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E5%BD%A9%E8%9B%8B%F0%9F%A5%9A"><span class="nav-number">2.1.</span> <span class="nav-text">小彩蛋🥚</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Toast-%E4%BB%8B%E7%B4%B9"><span class="nav-number">3.</span> <span class="nav-text">Toast 介紹</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Log-vs-Toast-%E4%BD%BF%E7%94%A8%E5%B7%AE%E7%95%B0"><span class="nav-number">4.</span> <span class="nav-text">Log vs Toast 使用差異</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E9%9A%9B%E6%A1%88%E4%BE%8B"><span class="nav-number">4.1.</span> <span class="nav-text">實際案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">74</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Debug] 02-在 Debug 時，靈活運用 Log & Toast
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-08-27 15:11:44" itemprop="dateCreated datePublished" datetime="2024-08-27T15:11:44+08:00">2024-08-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2024-08-29 00:01:56" itemprop="dateModified" datetime="2024-08-29T00:01:56+08:00">2024-08-29</time>
+      </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>Log 和 Toast 都很常被用來印出資訊，本篇會比較兩個物件的使用差異，分別介紹適合的情境。</p>
+<span id="more"></span>
+
+<h1 id="Log-介紹"><a href="#Log-介紹" class="headerlink" title="Log 介紹"></a>Log 介紹</h1><p>用於印出 Log，並可在 Logcat 工具中觀察。<br>Log 有不同等級 Assert、Error、Warning、Info、Debug、Verbose，我們可以依重要程度使用相應等級的 Log。等級是我們用來篩選 Log 的重要依據之一，隨意使用可能會造成後續維護的困擾。</p>
+<div class="note info"><h2 id="小彩蛋🥚"><a href="#小彩蛋🥚" class="headerlink" title="小彩蛋🥚"></a>小彩蛋🥚</h2><p>你用過這個嗎？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Log.wtf(String tag, String msg) </span><br></pre></td></tr></table></figure>
+<p><code>wtf</code> 絕對不是你想的那個 WTF，官方說明是 <strong>What a Terrible Failure</strong>，用來表示<strong>不可能發生的狀況</strong>，會印出 Assert 等級的 Log。</p>
+</div>
+
+<h1 id="Toast-介紹"><a href="#Toast-介紹" class="headerlink" title="Toast 介紹"></a>Toast 介紹</h1><p><img src="/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/Toast.png" alt="Toast 介紹"></p>
+<p>Toast 是在螢幕下半部，一個可以顯示資訊的小小 View。通常用來在盡量不影響使用者的操作下，通知某些狀態或訊息。雖然在使用者體驗方面，官方已經不那麼推薦 Toast，但這不妨礙我們拿它來 debug!</p>
+<blockquote>
+<p>官方：</br>如果您的應用程式位於前景，請考慮使用 <a target="_blank" rel="noopener" href="https://material.io/components/snackbars">snackbar</a> 而不要使用浮動式訊息。Snackbar 包含使用者可操作的選項，可為應用程式提供更優質的使用體驗。</br>如果應用程式在背景執行，而您希望使用者採取某些動作，請改為傳送通知。</p>
+</blockquote>
+<h1 id="Log-vs-Toast-使用差異"><a href="#Log-vs-Toast-使用差異" class="headerlink" title="Log vs Toast 使用差異"></a>Log vs Toast 使用差異</h1><table>
+<thead>
+<tr>
+<th><strong>功能&#x2F;特性</strong></th>
+<th><strong>Log</strong></th>
+<th><strong>Toast</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Context 需求</strong></td>
+<td>不需要 Context，任何地方皆可使用</td>
+<td>需要 Context，僅能在有 Context 的地方使用</td>
+</tr>
+<tr>
+<td><strong>執行緒要求</strong></td>
+<td>可在任何執行緒中使用</td>
+<td>必須在主執行緒（UI 執行緒）中使用</td>
+</tr>
+<tr>
+<td><strong>主要用途</strong></td>
+<td>記錄日誌供開發者除錯</td>
+<td>向使用者顯示短暫的通知或操作結果</td>
+</tr>
+<tr>
+<td><strong>輸出位置</strong></td>
+<td>在 Logcat 中查看，需要開發環境支持</td>
+<td>直接在手機螢幕上顯示，使用者（包括非工程師）可以直接看到</td>
+</tr>
+<tr>
+<td><strong>顯示效果</strong></td>
+<td>不影響使用者介面</td>
+<td>會在螢幕上短暫顯示，可能干擾使用者操作</td>
+</tr>
+</tbody></table>
+<h2 id="實際案例"><a href="#實際案例" class="headerlink" title="實際案例"></a>實際案例</h2><p>有些資訊其實對於整個系統的運作很重要，但不一定會顯示在 UI 上(例如，訊息id)。有時候，後端或QA的夥伴在比對資料時需要這些資訊，那我就會考慮用 Toast 的方式將這些資訊印出來。<br><img src="/2024/08/27/Debug-02-%E5%9C%A8Debug%E6%99%82-%E9%9D%88%E6%B4%BB%E9%81%8B%E7%94%A8Log-Toast/%E5%AF%A6%E9%9A%9B%E6%A1%88%E4%BE%8B.png" alt="實際案例"></p>
+<p>前面是在前端的案例，接下來舉個適合使用 Log 的案例。若是在底層打 API 的部分，想要加個 Timmer 自行控制 Timeout 時間。因為不是在 UI 執行緒，那麼印出當前秒數的功能就比較適用 Log。</p>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li>Log: <a target="_blank" rel="noopener" href="https://developer.android.com/reference/android/util/Log">https://developer.android.com/reference/android/util/Log</a></li>
+<li>浮動式訊息總覽: <a target="_blank" rel="noopener" href="https://developer.android.com/guide/topics/ui/notifiers/toasts?hl=zh-tw">https://developer.android.com/guide/topics/ui/notifiers/toasts?hl=zh-tw</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/Log/" rel="tag"># Log</a>
+              <a href="/tags/Toast/" rel="tag"># Toast</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/26/Debug-01-AndroidStudioLogcat%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%9A%E5%AF%AB%E5%A5%BDLog%E3%80%81%E6%89%BE%E5%B0%8DLog/" rel="prev" title="[Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log">
+                  <i class="fa fa-chevron-left"></i> [Debug] 01-Android Studio Logcat 使用技巧：寫好 Log、找對 Log
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
