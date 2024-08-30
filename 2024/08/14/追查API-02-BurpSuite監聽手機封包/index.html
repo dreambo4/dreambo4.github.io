@@ -23,16 +23,16 @@
 <meta name="description" content="情境在上一篇文章中，我們介紹了 Android Studio 內建的 Network Inspector。若是今天想撈的是別人的 APP 或網頁的 Request，Burp Suite 會是一個更適合的工具。Burp Suite 有很多版本，一般建議裝社群版(Community)就夠用了。 下載 Burp Suite Community Edition：https:&#x2F;&#x2F;portswigger.ne">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[追查API] 02-Burp Suite 監聽手機封包">
-<meta property="og:url" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/index.html">
+<meta property="og:url" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
 <meta property="og:description" content="情境在上一篇文章中，我們介紹了 Android Studio 內建的 Network Inspector。若是今天想撈的是別人的 APP 或網頁的 Request，Burp Suite 會是一個更適合的工具。Burp Suite 有很多版本，一般建議裝社群版(Community)就夠用了。 下載 Burp Suite Community Edition：https:&#x2F;&#x2F;portswigger.ne">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/ProxyRuleSetting.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/AndroidSetting.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/%E6%8C%89%E9%88%95%E5%8A%9F%E8%83%BD.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/HttpHistory.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/ProxyRuleSetting.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/AndroidSetting.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/%E6%8C%89%E9%88%95%E5%8A%9F%E8%83%BD.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/HttpHistory.png">
 <meta property="article:published_time" content="2024-08-14T07:40:05.000Z">
 <meta property="article:modified_time" content="2024-08-30T10:46:51.669Z">
 <meta property="article:author" content="dreambo4">
@@ -42,14 +42,14 @@
 <meta property="article:tag" content="API">
 <meta property="article:tag" content="Burp Suite">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png">
 
 
-<link rel="canonical" href="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/">
+<link rel="canonical" href="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/","path":"2024/08/14/追查API-02-BurpSuite監聽封包/","title":"[追查API] 02-Burp Suite 監聽手機封包"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/","path":"2024/08/14/追查API-02-BurpSuite監聽手機封包/","title":"[追查API] 02-Burp Suite 監聽手機封包"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>[追查API] 02-Burp Suite 監聽手機封包 | YR's Blog</title>
@@ -188,7 +188,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -246,21 +246,21 @@
 <h1 id="Burp-Suite-介紹"><a href="#Burp-Suite-介紹" class="headerlink" title="Burp Suite 介紹"></a>Burp Suite 介紹</h1><p>我第一次知道 Burp Suite 這個工具是因為資安的 CTF(Capture The Flag) 搶旗賽，Burp Suite 提供非常多輔助 “安全性測試” 的工具。今天要介紹的是眾多工具的其中之一–Proxy。</p>
 <p>Burp Proxy 可以讓手機的流量經過 Proxy 再代理發送出去，這樣我們就能攔截、查看、修改所有的 Request&#x2F;Response。其實這個作法，若攔截者有惡意意圖，已經是「中間人攻擊」（Man-in-the-middle attack），所以請不要對未經所有者授權的網站進行測試或攻擊。</p>
 <p>在 HTTP 的時代，Proxy 攔截封包相對簡單。然而，隨著 HTTPS 的普及和各種 CA 驗證技術的應用，現代使用 Proxy 代理並攔截封包變得有一定門檻。網路上有很多這類教學，詳細說明就留給參加資安主題的同學了。</p>
-<p><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png" alt="Proxy 原理"></p>
+<p><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/Proxy%E5%8E%9F%E7%90%86.png" alt="Proxy 原理"></p>
 <h2 id="使用步驟"><a href="#使用步驟" class="headerlink" title="使用步驟"></a>使用步驟</h2><ol>
 <li>在電腦上安裝 Burp Suite，作為 Proxy Server，並且讓 Client 和 Proxy 在同一個測試網段下。</li>
-<li>建立 Burp Suite 預設專案。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88.png" alt="建立專案"></li>
-<li>切換到 Proxy 頁籤，設定 Proxy 監聽的 Port。只要不和已使用的 Port 衝突，Port 號可以自由設置。<br> <img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/ProxyRuleSetting.png" alt="Proxy Rule Setting"></li>
-<li>手機設定連線到 Proxy。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/AndroidSetting.png" alt="Android Setting"></li>
+<li>建立 Burp Suite 預設專案。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88.png" alt="建立專案"></li>
+<li>切換到 Proxy 頁籤，設定 Proxy 監聽的 Port。只要不和已使用的 Port 衝突，Port 號可以自由設置。<br> <img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/ProxyRuleSetting.png" alt="Proxy Rule Setting"></li>
+<li>手機設定連線到 Proxy。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/AndroidSetting.png" alt="Android Setting"></li>
 </ol>
-<h2 id="功能介紹"><a href="#功能介紹" class="headerlink" title="功能介紹"></a>功能介紹</h2><p>完成上述設定後，就能透過 Burp Suite 攔截封包了。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/%E6%8C%89%E9%88%95%E5%8A%9F%E8%83%BD.png" alt="按鈕功能"></p>
+<h2 id="功能介紹"><a href="#功能介紹" class="headerlink" title="功能介紹"></a>功能介紹</h2><p>完成上述設定後，就能透過 Burp Suite 攔截封包了。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/%E6%8C%89%E9%88%95%E5%8A%9F%E8%83%BD.png" alt="按鈕功能"></p>
 <p>主要按鈕功能：</p>
 <ul>
 <li>Forward: 讓攔截到的流量通過(送到 Server)</li>
 <li>Drop: 丟棄攔截到的流量</li>
 <li>Intercept is on&#x2F;off: 開啟&#x2F;關閉攔截功能</li>
 </ul>
-<p>成功攔截到的流量紀錄，也可以在 HTTP History 查看。但我的 Post 內容有關個資，不方便 show 給大家看，留給大家自行嘗試囉。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/HttpHistory.png" alt="HTTP History"></p>
+<p>成功攔截到的流量紀錄，也可以在 HTTP History 查看。但我的 Post 內容有關個資，不方便 show 給大家看，留給大家自行嘗試囉。<br><img src="/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/HttpHistory.png" alt="HTTP History"></p>
 <h2 id="工具優缺"><a href="#工具優缺" class="headerlink" title="工具優缺"></a>工具優缺</h2><ul>
 <li><p>優點</p>
 <ul>
