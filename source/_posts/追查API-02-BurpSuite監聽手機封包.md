@@ -1,5 +1,5 @@
 ---
-title: '[追查API] 02-Burp Suite 監聽封包'
+title: '[追查API] 02-Burp Suite 監聽手機封包'
 date: 2024-08-14T23:40:05+08:00
 tags:
 - 16th鐵人賽
