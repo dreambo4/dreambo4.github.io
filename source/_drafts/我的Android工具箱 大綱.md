@@ -155,6 +155,7 @@ tags:
         - API 來的資料有時候不乾淨，json 需要排版，或去雙引號、解base64之類的
     - **Day15 - [追查 API] PACAndroid**
         - Relaese 版的 APP(或是別人的APP😏)，看不到 Log 或 Layout Inspector，這個像是 在手機上的 Wireshark
+    - **Day16 - [追查 API] 用 Postman 蒐集使用API**
 - Debug: 
     - **Day16 - [Debug] Log Cat**
         - Log Filter、Log Tag、Log Level
