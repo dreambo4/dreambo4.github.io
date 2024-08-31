@@ -3,10 +3,10 @@ title: '[追查API] 02-Burp Suite 監聽手機封包'
 date: 2024-08-14T23:40:05+08:00
 tags:
 - 16th鐵人賽
-- Android
 - API
 - Burp Suite
 - 資安
+- Proxy
 ---
 
 # 情境
