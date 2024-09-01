@@ -157,17 +157,17 @@ tags:
         - Relaese 版的 APP(或是別人的APP😏)，看不到 Log 或 Layout Inspector，這個像是 在手機上的 Wireshark
     - **Day16 - [追查 API] 用 Postman 蒐集使用API**
 - Debug: 
-    - **Day16 - [Debug] Log Cat**
+    - **Day17 - [Debug] Log Cat**
         - Log Filter、Log Tag、Log Level
         - 好的 debug filter 可以過濾掉過多的 log 資訊，我只想看我要的
         - 管理專案中的Log，開發時，可以下一個自己專用的TAG，filter 就只要濾這個自己專用的TAG，不會看到過的無用資訊。
         - 程式推上git前，全域的搜尋一下自己的TAG，避免不需要的內容被推上去
         - 若確定是要保留的TAG，就將TAG改名成檔案名或Class名，避免 Logcat 中有一堆不知道哪裡印出的 Log
-    - **Day17 - [Debug] Log vs Toast**
+    - **Day18 - [Debug] Log vs Toast**
         - Log 不需要 Context，Toast 需要 Context
         - Log 比較通用，可以觀察執行緒的順序
         - Toast 不需要插線，方邊觀察，也方便非工程師觀察
-    - **Day18 - [Debug] Device Exploer**
+    - **~~Day18 - [Debug] Device Exploer~~**
         - APP 寫檔的儲存位置
         - 寫檔、看檔
     - **Day19 - [Debug] SQLite**
