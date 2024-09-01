@@ -47,6 +47,8 @@ Proxy 原理和的手機端的設定方式，在之前的文章([[追查API] 02-
 {% youtube i6V6Su7HoyA %}
 
 ## Postman Proxy vs Burp Suite Proxy
+參考前幾天的 Burp Suite Proxy：[[追查API] 02-Burp Suite 監聽手機封包](https://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/)
+
 首先，兩者都是方便好用的 Proxy 工具，都可以用來紀錄並觀察 HTTP 封包。
 
 差異就在，Burp Suite 的特色是可以一包一包的觀察，並且由你決定放行、竄改、丟棄每一個 Request。適用情境應該偏向資安領域，可以檢測封包內是否包含敏感資訊(身分證ID、電話等)。或是檢測後端程式有沒有做好檢核，竄改 Request 內容可能做到提權、獲取他人資料等。(好的檢核，不能只有前端做，後端也要做喔)
