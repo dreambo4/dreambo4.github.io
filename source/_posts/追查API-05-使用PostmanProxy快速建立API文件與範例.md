@@ -58,7 +58,7 @@ Proxy 原理和的手機端的設定方式，在之前的文章([[追查API] 02-
 # 後記
 追查 API 的主題告一段落了，API 是我所有小主題中，最有心得的一塊。因為寫 APP 基本離不開 API，不連網的 APP 應該很少很少了吧？再加上以前和朋友參加過幾次 CTF 比賽，我沒有資工朋友的那些硬底子，PWN、Reverse 這類題目基本直接跳過，只能主攻網頁題，也因此練就攔截封包的各種技能XD
 
-最後，感謝朋友提供現成的 Restful API，讓我順利完成本文的 Demo！
+**最後，感謝朋友提供的 Restful API，讓我順利完成本文的 Demo！**
 
 # 參考資料
 - Capture traffic using the Postman built-in proxy: https://learning.postman.com/docs/sending-requests/capturing-request-data/capture-with-proxy/
