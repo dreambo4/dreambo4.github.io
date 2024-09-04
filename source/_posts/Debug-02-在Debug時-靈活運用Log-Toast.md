@@ -17,7 +17,7 @@ Log 和 Toast 都很常被用來印出資訊，本篇會比較兩個物件的使
 Log 有不同等級 Assert、Error、Warning、Info、Debug、Verbose，我們可以依重要程度使用相應等級的 Log。等級是我們用來篩選 Log 的重要依據之一，隨意使用可能會造成後續維護的困擾。
 
 {% note info %}
-## 小彩蛋🥚
+## WTF 小彩蛋🥚
 你用過這個嗎？
 ```java
 Log.wtf(String tag, String msg) 
