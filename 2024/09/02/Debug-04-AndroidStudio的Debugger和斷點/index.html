@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://dreambo4.github.io/2024/09/02/Debug-04-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E/MethodBreakpoints.png">
 <meta property="og:image" content="http://dreambo4.github.io/2024/09/02/Debug-04-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E/StartDebugger.png">
 <meta property="article:published_time" content="2024-09-02T04:07:14.000Z">
-<meta property="article:modified_time" content="2024-09-03T12:44:26.204Z">
+<meta property="article:modified_time" content="2024-09-04T11:16:18.615Z">
 <meta property="article:author" content="dreambo4">
 <meta property="article:tag" content="16th鐵人賽">
 <meta property="article:tag" content="Android Studio">
@@ -124,7 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">工具介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Debugger%EF%BC%88%E9%99%A4%E9%8C%AF%E5%99%A8%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">Debugger（除錯器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Breakpoint%EF%BC%88%E6%96%B7%E9%BB%9E%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">Breakpoint（斷點）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B7%E9%BB%9E%E7%A8%AE%E9%A1%9E"><span class="nav-number">2.2.1.</span> <span class="nav-text">斷點種類</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%9F%E5%8B%95%E5%81%B5%E9%8C%AF"><span class="nav-number">2.3.</span> <span class="nav-text">啟動偵錯</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">3.</span> <span class="nav-text">小結</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Debugger%EF%BC%88%E9%99%A4%E9%8C%AF%E5%99%A8%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">Debugger（除錯器）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Breakpoint%EF%BC%88%E6%96%B7%E9%BB%9E%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Breakpoint（斷點）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B7%E9%BB%9E%E7%A8%AE%E9%A1%9E"><span class="nav-number">3.1.</span> <span class="nav-text">斷點種類</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%95%9F%E5%8B%95%E5%81%B5%E9%8C%AF"><span class="nav-number">4.</span> <span class="nav-text">啟動偵錯</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">5.</span> <span class="nav-text">小結</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -138,7 +138,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -215,7 +215,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-09-03 20:44:26" itemprop="dateModified" datetime="2024-09-03T20:44:26+08:00">2024-09-03</time>
+        <time title="修改時間：2024-09-04 19:16:18" itemprop="dateModified" datetime="2024-09-04T19:16:18+08:00">2024-09-04</time>
       </span>
 
   
@@ -238,9 +238,9 @@
         <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>前面幾天介紹了 Log，但其實除了用 Log 將變數印下來以外，還可以使用 Debugger 即時觀察變數當下的狀況。今天主要會介紹 Android Studio 基本的 Debugger 和 Breakpoint 操作。</p>
 <span id="more"></span>
 
-<h1 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h1><h2 id="Debugger（除錯器）"><a href="#Debugger（除錯器）" class="headerlink" title="Debugger（除錯器）"></a>Debugger（除錯器）</h2><p>Debugger 是一種用來測試和除錯程式碼的工具，開發者可以通過它逐步執行程式碼、檢查變數、設置中斷點，並即時觀察程式的行為。這個工具對於識別和修復程式中的錯誤非常有幫助，讓開發者能夠深入理解程式的運行流程，確保程式碼能按照預期的方式運作。</p>
-<h2 id="Breakpoint（斷點）"><a href="#Breakpoint（斷點）" class="headerlink" title="Breakpoint（斷點）"></a>Breakpoint（斷點）</h2><p>Breakpoint 是開發者在程式碼中設置的一個特殊標記，用來指示除錯器在程式執行到該點時暫停。當程式停止在中斷點時，開發者可以檢查當前的變數狀態、呼叫堆疊，以及其他相關資訊。這使得開發者能夠逐步執行程式，並且通過檢查程式在某些特定狀態下的表現來縮小問題的範圍，進一步診斷錯誤的根本原因。</p>
-<h3 id="斷點種類"><a href="#斷點種類" class="headerlink" title="斷點種類"></a>斷點種類</h3><p>你可以在需要測試的程式之前插入斷點(參考圖片⬇️)</p>
+<h1 id="Debugger（除錯器）"><a href="#Debugger（除錯器）" class="headerlink" title="Debugger（除錯器）"></a>Debugger（除錯器）</h1><p>Debugger 是一種用來測試和除錯程式碼的工具，開發者可以通過它逐步執行程式碼、檢查變數、設置中斷點，並即時觀察程式的行為。這個工具對於識別和修復程式中的錯誤非常有幫助，讓開發者能夠深入理解程式的運行流程，確保程式碼能按照預期的方式運作。</p>
+<h1 id="Breakpoint（斷點）"><a href="#Breakpoint（斷點）" class="headerlink" title="Breakpoint（斷點）"></a>Breakpoint（斷點）</h1><p>Breakpoint 是開發者在程式碼中設置的一個特殊標記，用來指示除錯器在程式執行到該點時暫停。當程式停止在中斷點時，開發者可以檢查當前的變數狀態、呼叫堆疊，以及其他相關資訊。這使得開發者能夠逐步執行程式，並且通過檢查程式在某些特定狀態下的表現來縮小問題的範圍，進一步診斷錯誤的根本原因。</p>
+<h2 id="斷點種類"><a href="#斷點種類" class="headerlink" title="斷點種類"></a>斷點種類</h2><p>你可以在需要測試的程式之前插入斷點(參考圖片⬇️)</p>
 <ol>
 <li><p><strong>行斷點(Line breakpoints)</strong><br>這兩個都是一般的 <code>行(ㄏㄤˊ)斷點</code>，行斷點可以加上條件判斷，例如：我想要斷點停在第二筆訊息的時候。<br><img src="/2024/09/02/Debug-04-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E/LineBreakpoints.png" alt="Line breakpoints"></p>
 </li>
@@ -250,7 +250,7 @@
 </li>
 </ol>
 <p><strong>屬性斷點、方法斷點會大大影響 APP 執行速度</strong>，除非不得已，不然少用，或搭配等下介紹的 <code>Attach Debugger to Android Process</code> 使用。</p>
-<h2 id="啟動偵錯"><a href="#啟動偵錯" class="headerlink" title="啟動偵錯"></a>啟動偵錯</h2><p><img src="/2024/09/02/Debug-04-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E/StartDebugger.png" alt="Start Debugger"><br>啟動偵錯工作的按鈕有兩個，可以依據自己的情境搭配使用。</p>
+<h1 id="啟動偵錯"><a href="#啟動偵錯" class="headerlink" title="啟動偵錯"></a>啟動偵錯</h1><p><img src="/2024/09/02/Debug-04-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E/StartDebugger.png" alt="Start Debugger"><br>啟動偵錯工作的按鈕有兩個，可以依據自己的情境搭配使用。</p>
 <ol>
 <li>Debug ‘app’: 會重新 build，安裝 APP</li>
 <li>Attach Debugger to Android Process: 如果應用程式已在裝置上執行，您不必重新啟動應用程式，就可以開始偵錯</li>
@@ -284,6 +284,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/" rel="next" title="[Debug] 05-Android Studio 的 Debugger 和斷點(2)">
+                  [Debug] 05-Android Studio 的 Debugger 和斷點(2) <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
