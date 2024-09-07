@@ -172,27 +172,28 @@ tags:
         - 寫檔、看檔
     - **Day19 - [Debug] SQLite**
         - App Inspection > Database Inspector
-    - **Day20 - [Debug] Debugger、斷點**
-    - **Day21 - [Debug] Share Preference**
+    - **Day20 - [Debug] Debugger、斷點 1**
+    - **Day21 - [Debug] Debugger、斷點 2**
+    - **Day22 - [Debug] Share Preference**
         - 其實是寫檔、檔案位置
-    - **Day22 - [Debug] ADB 環境變數**
+    - **Day23 - [Debug] ADB 環境變數**
 - 版本控管
-    - **Day23 [版本控管] Git GUI介面**
+    - **Day24 [版本控管] Git GUI介面**
         - 方便的 Git GUI，可以視覺化的了解 Commit、Branch 之間的關係
-    - **Day24 [版本控管] 被插件怎麼辦**
+    - **Day25 [版本控管] 被插件怎麼辦**
         - 工程師免不了被插件，被插件的時候，可能要放下開發到一半的功能，切去其他分支修bug，這時候要用shelf或stash
-    - **Day25 [版本控管] 忍不住順手修掉其他 Bug (Shelves)**
+    - **Day26 [版本控管] 忍不住順手修掉其他 Bug (Shelves)**
         - 有時候寫需求的過程中，順手修掉bug，但推code的時候不想兩段不相關的code混在一個commit裡面。
         - 或是可能只想先推一部分的code，還沒寫好的部分不想推上去。這時候可以用 change List
-    - **Day26 [版本控管] Merge vs Rebase**
+    - **Day27 [版本控管] Merge vs Rebase**
         - 工程師的小堅持，在同個分支，遠端的code比較新要用Rebase，不要用Merge，保持線的乾淨
 - Demo
     - 開會時免不了要投影
-    - **Day27 - [Demo] Ｖysor & 內建工具**
+    - **Day28 - [Demo] Ｖysor & 內建工具**
         - 將手機螢幕投影到電腦 Demo
         - 將多台手機投影到電腦 深淺色一起做
 - 發佈
-    - **Day28 - [發佈] Crashlytics**
+    - **~~Day28 - [發佈] Crashlytics~~**
         - 追蹤用戶閃退紀錄
     - **Day29 - [發佈] APP Distrobution**
         - 發布測試版本
