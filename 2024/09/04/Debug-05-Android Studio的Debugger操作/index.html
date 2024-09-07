@@ -23,29 +23,29 @@
 <meta name="description" content="情境接續前一篇，昨天介紹啟動斷點的種類和偵錯的啟動方式，今天要介紹 Debugger 的基本操作方式。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[Debug] 05-Android Studio 的 Debugger 操作">
-<meta property="og:url" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/index.html">
+<meta property="og:url" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/index.html">
 <meta property="og:site_name" content="YR&#39;s Blog">
 <meta property="og:description" content="情境接續前一篇，昨天介紹啟動斷點的種類和偵錯的啟動方式，今天要介紹 Debugger 的基本操作方式。">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/Debugger.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/Buttons.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/LineWatch.png">
-<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/AddToWatch.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/Debugger.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/Buttons.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/LineWatch.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/AddToWatch.png">
 <meta property="article:published_time" content="2024-09-04T03:03:32.000Z">
-<meta property="article:modified_time" content="2024-09-07T08:21:36.986Z">
+<meta property="article:modified_time" content="2024-09-07T08:48:50.812Z">
 <meta property="article:author" content="dreambo4">
 <meta property="article:tag" content="16th鐵人賽">
 <meta property="article:tag" content="Android Studio">
 <meta property="article:tag" content="偵錯">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/Debugger.png">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/Debugger.png">
 
 
-<link rel="canonical" href="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/">
+<link rel="canonical" href="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/","path":"2024/09/04/Debug-05-AndroidStudio的Debugger和斷點2/","title":"[Debug] 05-Android Studio 的 Debugger 操作"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/","path":"2024/09/04/Debug-05-Android Studio的Debugger操作/","title":"[Debug] 05-Android Studio 的 Debugger 操作"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>[Debug] 05-Android Studio 的 Debugger 操作 | YR's Blog</title>
@@ -184,7 +184,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -215,7 +215,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2024-09-07 16:21:36" itemprop="dateModified" datetime="2024-09-07T16:21:36+08:00">2024-09-07</time>
+        <time title="修改時間：2024-09-07 16:48:50" itemprop="dateModified" datetime="2024-09-07T16:48:50+08:00">2024-09-07</time>
       </span>
 
   
@@ -243,7 +243,7 @@
 <li>當程式跑到斷點的行數，就會卡住</li>
 <li>接下來就能用下方介紹的按鈕，一行一行觀察程式執行狀況。</li>
 </ol>
-<p><img src="/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/Debugger.png" alt="Debugger"><br>功能按鈕的介紹(由左而右):<br><img src="/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/Buttons.png" alt="Buttons"></p>
+<p><img src="/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/Debugger.png" alt="Debugger"><br>功能按鈕的介紹(由左而右):<br><img src="/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/Buttons.png" alt="Buttons"></p>
 <ol>
 <li>Rerun ‘app’: 以偵錯模式，重新執行 APP</li>
 <li>Stop ‘app’: 停止偵錯</li>
@@ -255,8 +255,8 @@
 <li>View Breakpoints…: 顯示所有斷點</li>
 <li>Mute Breakpoints: 暫時略過所有斷點</li>
 </ol>
-<p>在程式旁邊可以直接看到<br><img src="/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/LineWatch.png" alt="LineWatch"></p>
-<p>上面的輸入框可以讀取到現有的變數，也可以對變數執行一些程式。或是按一下右邊的 Add to Watches，可以加入下方區塊，隨時觀察變數狀態。<br><img src="/2024/09/04/Debug-05-AndroidStudio%E7%9A%84Debugger%E5%92%8C%E6%96%B7%E9%BB%9E2/AddToWatch.png" alt="AddToWatch"></p>
+<p>在程式旁邊可以直接看到<br><img src="/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/LineWatch.png" alt="LineWatch"></p>
+<p>上面的輸入框可以讀取到現有的變數，也可以對變數執行一些程式。或是按一下右邊的 Add to Watches，可以加入下方區塊，隨時觀察變數狀態。<br><img src="/2024/09/04/Debug-05-Android%20Studio%E7%9A%84Debugger%E6%93%8D%E4%BD%9C/AddToWatch.png" alt="AddToWatch"></p>
 <h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
 <li>Debug code: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/idea/2024.1/debugging-code.html">https://www.jetbrains.com/help/idea/2024.1/debugging-code.html</a></li>
 <li>為應用程式偵錯: <a target="_blank" rel="noopener" href="https://developer.android.com/studio/debug?hl=zh-tw">https://developer.android.com/studio/debug?hl=zh-tw</a></li>
