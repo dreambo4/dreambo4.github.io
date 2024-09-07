@@ -8,6 +8,9 @@ tags:
 - 行雲部落格
 ---
 
+> 2024/09/07 更新：
+> 原本本文所寫「ADB指令參考」，應該是 Shell 指令。
+
 * 本文曾發佈在 [https://blog.cmrdb.cs.pu.edu.tw/?p=432](https://blog.cmrdb.cs.pu.edu.tw/?p=432)
 
 相信大家或多或少都知道Android是一個基於Linux開發的作業系統，既然是Linux，你有沒有想過要在你的手機上下指令呢?
@@ -57,7 +60,8 @@ C:\Users\[使用者名稱]\AppData\Local\Android\sdk\platform-tools
 
 接下來你可以在裡面到處逛逛，你會發現當你想對一些較重要的檔案存取時，會顯示Permission denied，這表示你權限不足。一般沒有root過的手機是不會有最高權限的。如果想嘗試，可以試試開一些版本較低的虛擬機，有些預設有root權限。
 
-# ADB指令參考
+# 手機 Shell 指令參考
+Shell 是跟 Linux 溝通的介面。製造商不同，手機內建的 shell 也可能不同。以 Pixel 6a 為例，內建 shell 是 sh。
 
 - 列出目錄/檔案
     ```shell
