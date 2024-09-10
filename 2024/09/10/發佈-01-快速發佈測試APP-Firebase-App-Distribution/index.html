@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="情境在 APP 正式對外發布前，都會經過好幾輪測試。而這些測試用的 APK，我們通常會用 Firebase 的 App Distribution 來發佈和管理。今天主要說明，如何將 Android APP 發佈到 App Distribution，讓 測試人員下載。 因為我很喜歡以前寫的這個小專案 Notification_LED，希望遇到手機有 LED 燈的人，都可以把 APK 發給他😆，所以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[發佈] 01-快速發佈測試 APP - Firebase App Distribution">
+<meta property="og:url" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="情境在 APP 正式對外發布前，都會經過好幾輪測試。而這些測試用的 APK，我們通常會用 Firebase 的 App Distribution 來發佈和管理。今天主要說明，如何將 Android APP 發佈到 App Distribution，讓 測試人員下載。 因為我很喜歡以前寫的這個小專案 Notification_LED，希望遇到手機有 LED 燈的人，都可以把 APK 發給他😆，所以">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/%E5%BB%BA%E7%AB%8BFirebase%E5%B0%88%E6%A1%88.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/iFirebase%E6%96%B0%E5%A2%9E%E5%88%B0%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F1.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/iFirebase%E6%96%B0%E5%A2%9E%E5%88%B0%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F2.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/AppDistribution.png">
+<meta property="article:published_time" content="2024-09-10T04:21:54.000Z">
+<meta property="article:modified_time" content="2024-09-10T15:57:41.883Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="Firebase">
+<meta property="article:tag" content="APK">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/%E5%BB%BA%E7%AB%8BFirebase%E5%B0%88%E6%A1%88.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/","path":"2024/09/10/發佈-01-快速發佈測試APP-Firebase-App-Distribution/","title":"[發佈] 01-快速發佈測試 APP - Firebase App Distribution"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[發佈] 01-快速發佈測試 APP - Firebase App Distribution | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">工具介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%A9%9F"><span class="nav-number">2.1.</span> <span class="nav-text">使用步驟</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%87-Firebase-%E5%8A%A0%E5%85%A5%E5%B0%88%E6%A1%88"><span class="nav-number">2.1.1.</span> <span class="nav-text">將 Firebase 加入專案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BC%E4%BD%88-APK-%E5%88%B0-App-Distribution"><span class="nav-number">2.1.2.</span> <span class="nav-text">發佈 APK 到 App Distribution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%84%AA%E7%BC%BA"><span class="nav-number">2.2.</span> <span class="nav-text">工具優缺</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">79</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [發佈] 01-快速發佈測試 APP - Firebase App Distribution
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2024-09-10 12:21:54 / 修改時間：23:57:41" itemprop="dateCreated datePublished" datetime="2024-09-10T12:21:54+08:00">2024-09-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>在 APP 正式對外發布前，都會經過好幾輪測試。而這些測試用的 APK，我們通常會用 Firebase 的 App Distribution 來發佈和管理。今天主要說明，如何將 Android APP 發佈到 App Distribution，讓 測試人員下載。</p>
+<p>因為我很喜歡以前寫的這個小專案 <a target="_blank" rel="noopener" href="https://github.com/dreambo4/Notification_LED">Notification_LED</a>，希望遇到手機有 LED 燈的人，都可以把 APK 發給他😆，所以今天的目標就是把這個專案上到 App Distribution！</p>
+<span id="more"></span>
+
+<h1 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h1><p>Firebase App Distribution 可讓您輕鬆將應用程式發行給信任的測試人員。若專案還沒到商店發佈階段，但又有發布 APP 的需求，就很適合使用 App Distribution。<strong>但要特別注意的是，APK 只能在平台上保留 3 個月</strong>。</p>
+<h2 id="使用步驟"><a href="#使用步驟" class="headerlink" title="使用步驟"></a>使用步驟</h2><p>步驟分為兩大部分，第一步是建立 Firebase 專案，需要使用 Firebase 功能的，都可以參考這段步驟。第二段是將 APK 發布到 App Distribution。</p>
+<h3 id="將-Firebase-加入專案"><a href="#將-Firebase-加入專案" class="headerlink" title="將 Firebase 加入專案"></a>將 Firebase 加入專案</h3><p>Firebase Console: <a target="_blank" rel="noopener" href="https://console.firebase.google.com/">https://console.firebase.google.com/</a></p>
+<ul>
+<li><p>第一步，建立 Firebase 專案，Firebase 的介面現在已經比較親民、清楚了，基本上只要照著指示就能成功建立專案。</p>
+<ul>
+<li><img src="/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/%E5%BB%BA%E7%AB%8BFirebase%E5%B0%88%E6%A1%88.png" alt="建立 Firebase 專案"></li>
+</ul>
+</li>
+<li><p>第二步，將 Firebase 新增到應用程式。</p>
+<ul>
+<li>5: 若沒特殊需求，可以使用原有的 Firebase 帳號 + 「自動建立新資源」</li>
+<li>6: Android 套件名稱要輸入 <code>build.gradle(:app)</code> 裡面的 <code>applicationId</code>。</li>
+<li>7: 依照指示將檔案放到指定位置。因為這個檔案裡放了 APP 的相關資訊，不建議放到公開 Git，建議加入 <code>.gitignore</code>。</li>
+<li>8: 每個人的 gradle 可能不太一樣，若有問題，建議整段貼給 AI 請他寫。或是參考我專案中的這個 <a target="_blank" rel="noopener" href="https://github.com/dreambo4/Notification_LED/commit/ef94c141309a33e6c438785a04ea4b941ce0823f">commit</a>。</li>
+<li><img src="/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/iFirebase%E6%96%B0%E5%A2%9E%E5%88%B0%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F1.png" alt="Firebase 新增到應用程式1"></li>
+<li><img src="/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/iFirebase%E6%96%B0%E5%A2%9E%E5%88%B0%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F2.png" alt="Firebase 新增到應用程式2"></li>
+</ul>
+</li>
+</ul>
+<h3 id="發佈-APK-到-App-Distribution"><a href="#發佈-APK-到-App-Distribution" class="headerlink" title="發佈 APK 到 App Distribution"></a>發佈 APK 到 App Distribution</h3><ol>
+<li>側選欄中找到 App Distribution</li>
+<li>直接將檔案拖進網頁上傳</li>
+<li>輸入發佈對象的 Email，不限於 gmail，試過 Hotmail、Yahoo 都行，重點是對象手機能收信的信箱。</li>
+<li><img src="/2024/09/10/%E7%99%BC%E4%BD%88-01-%E5%BF%AB%E9%80%9F%E7%99%BC%E4%BD%88%E6%B8%AC%E8%A9%A6APP-Firebase-App-Distribution/AppDistribution.png" alt="App Distribution"></li>
+<li>受發布對象會收到一封 Mail，引導下載 <code>App Tester</code>，之後就能透過這個 APP 下載 APP Distribution 的 APP 了。</li>
+</ol>
+<h2 id="工具優缺"><a href="#工具優缺" class="headerlink" title="工具優缺"></a>工具優缺</h2><ul>
+<li>優點<ul>
+<li>發布前，不像商店需要經過審核</li>
+<li>快速發佈給測試人員</li>
+</ul>
+</li>
+<li>缺點<ul>
+<li>APK 只能保留 3 個月</li>
+</ul>
+</li>
+</ul>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li>Firebase App Distribution: <a target="_blank" rel="noopener" href="https://firebase.google.com/docs/app-distribution?hl=zh-tw">https://firebase.google.com/docs/app-distribution?hl=zh-tw</a></li>
+<li>將應用程式套件版本發布給測試人員 - 程式碼研究室: <a target="_blank" rel="noopener" href="https://firebase.google.com/codelabs/appdistribution-app-bundles?hl=zh-tw#0">https://firebase.google.com/codelabs/appdistribution-app-bundles?hl=zh-tw#0</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/Firebase/" rel="tag"># Firebase</a>
+              <a href="/tags/APK/" rel="tag"># APK</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/07/Debug-07-%E6%9F%A5%E7%9C%8B%E5%AF%AB%E6%AA%94%E4%BD%8D%E7%BD%AE%E5%8F%8ASharePreference%E5%85%A7%E5%AE%B9/" rel="prev" title="[Debug] 07-查看 APP 檔案儲存位置及 SharePreference 內容">
+                  <i class="fa fa-chevron-left"></i> [Debug] 07-查看 APP 檔案儲存位置及 SharePreference 內容
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
