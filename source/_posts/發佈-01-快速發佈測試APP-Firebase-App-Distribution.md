@@ -8,7 +8,7 @@ tags:
 ---
 
 # 情境
-在 APP 正式對外發布前，都會經過好幾輪測試。而這些測試用的 APK，我們通常會用 Firebase 的 App Distribution 來發佈和管理。今天主要說明，如何將 Android APP 發佈到 App Distribution，讓 測試人員下載。
+在 APP 正式對外發布前，都會經過好幾輪測試。而這些測試用的 APK，我們通常會用 Firebase 的 App Distribution 來發佈和管理。今天主要說明，如何將 Android APP 發佈到 App Distribution，讓測試人員下載。
 
 因為我很喜歡以前寫的這個小專案 [Notification_LED](https://github.com/dreambo4/Notification_LED)，希望遇到手機有 LED 燈的人，都可以把 APK 發給他😆，所以今天的目標就是把這個專案上到 App Distribution！
 <!-- more -->
