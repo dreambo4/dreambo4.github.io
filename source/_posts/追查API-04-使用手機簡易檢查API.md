@@ -15,7 +15,7 @@ https://play.google.com/store/apps/details?id=com.emanuelef.remote_capture
 
 先前文章參考：
 - [[追查API] 01-出事的是哪隻API-Network Inspector](https://dreambo4.github.io/2024/08/11/%E8%BF%BD%E6%9F%A5API-01-%E5%87%BA%E4%BA%8B%E7%9A%84%E6%98%AF%E5%93%AA%E9%9A%BBAPI-Network-Inspector/)
-- [[追查API] 02-Burp Suite 監聽封包](https://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E5%B0%81%E5%8C%85/)
+- [[追查API] 02-Burp Suite 監聽封包](https://dreambo4.github.io/2024/08/14/%E8%BF%BD%E6%9F%A5API-02-BurpSuite%E7%9B%A3%E8%81%BD%E6%89%8B%E6%A9%9F%E5%B0%81%E5%8C%85/)
 
 # PCAPdroid 介紹
 > PCAPdroid 是一款注重隱私的開源應用程式，讓你可以追蹤、分析並阻擋裝置中其他應用程式的連線。它還可以導出流量的 PCAP 檔案、檢查 HTTP、解密 TLS 流量等更多功能！
