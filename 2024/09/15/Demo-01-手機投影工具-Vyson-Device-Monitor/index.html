@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dreambo4.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="情境在進行開會演示或開發測試時，我們經常需要將 Android 手機螢幕投影到電腦上。雖然 Android 沒有像蘋果的 AirPlay 那樣內建的方便功能，但我們仍有多種方式可以達到相同效果。本文將介紹兩種實用的工具：Vysor 和 Android Studio 的 Device Mirroring。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Demo] 01-手機投影工具-Vyson &amp; 內建 Device Mirroring">
+<meta property="og:url" content="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/index.html">
+<meta property="og:site_name" content="YR&#39;s Blog">
+<meta property="og:description" content="情境在進行開會演示或開發測試時，我們經常需要將 Android 手機螢幕投影到電腦上。雖然 Android 沒有像蘋果的 AirPlay 那樣內建的方便功能，但我們仍有多種方式可以達到相同效果。本文將介紹兩種實用的工具：Vysor 和 Android Studio 的 Device Mirroring。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/Vysor.png">
+<meta property="og:image" content="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/DeviceMirroring.png">
+<meta property="article:published_time" content="2024-09-15T03:57:43.000Z">
+<meta property="article:modified_time" content="2024-09-15T14:00:01.140Z">
+<meta property="article:author" content="dreambo4">
+<meta property="article:tag" content="16th鐵人賽">
+<meta property="article:tag" content="Android Studio">
+<meta property="article:tag" content="Vysor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/Vysor.png">
+
+
+<link rel="canonical" href="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/","path":"2024/09/15/Demo-01-手機投影工具-Vyson-Device-Monitor/","title":"[Demo] 01-手機投影工具-Vyson & 內建 Device Mirroring"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[Demo] 01-手機投影工具-Vyson & 內建 Device Mirroring | YR's Blog</title>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KNT036DRQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0KNT036DRQ');
+    </script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YR's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vysor-%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">Vysor 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vysor-%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%A9%9F"><span class="nav-number">2.1.</span> <span class="nav-text">Vysor 使用步驟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vysor-%E5%84%AA%E7%BC%BA"><span class="nav-number">2.2.</span> <span class="nav-text">Vysor 優缺</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Studio-Device-Mirroring"><span class="nav-number">3.</span> <span class="nav-text">Android Studio-Device Mirroring</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Device-Mirroring-%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%A9%9F"><span class="nav-number">3.1.</span> <span class="nav-text">Device Mirroring 使用步驟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Device-Mirroring-%E5%84%AA%E7%BC%BA"><span class="nav-number">3.2.</span> <span class="nav-text">Device Mirroring 優缺</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">4.</span> <span class="nav-text">總結</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">dreambo4</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="http://dreambo4.github.io/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="dreambo4">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YR's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Demo] 01-手機投影工具-Vyson & 內建 Device Mirroring
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2024-09-15 11:57:43 / 修改時間：22:00:01" itemprop="dateCreated datePublished" datetime="2024-09-15T11:57:43+08:00">2024-09-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h1><p>在進行開會演示或開發測試時，我們經常需要將 Android 手機螢幕投影到電腦上。雖然 Android 沒有像蘋果的 AirPlay 那樣內建的方便功能，但我們仍有多種方式可以達到相同效果。本文將介紹兩種實用的工具：Vysor 和 Android Studio 的 Device Mirroring。</p>
+<span id="more"></span>
+
+<h1 id="Vysor-介紹"><a href="#Vysor-介紹" class="headerlink" title="Vysor 介紹"></a>Vysor 介紹</h1><p>Vysor 是一個支援多系統的軟體，你可以自由選擇安裝桌面版或 Chrome 的套件版。Vysor 可以將 Android 或 iOS 裝置的畫面投影至電腦螢幕。</p>
+<h2 id="Vysor-使用步驟"><a href="#Vysor-使用步驟" class="headerlink" title="Vysor 使用步驟"></a>Vysor 使用步驟</h2><p>本文以 Mac 桌面版為例，展示 Vysor 的使用方法：</p>
+<ol>
+<li>依照指示下載 Vysor<ul>
+<li>Download Vysor: <a target="_blank" rel="noopener" href="https://www.vysor.io/download/">https://www.vysor.io/download/</a></li>
+</ul>
+</li>
+<li>Android 手機開啟偵錯模式</li>
+<li>將手機連接到電腦</li>
+<li>在 Vysor 上看到裝置，點選最右邊的紅色按鈕，將手機螢幕投影到電腦<br><img src="/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/Vysor.png" alt="Vysor"></li>
+</ol>
+<h2 id="Vysor-優缺"><a href="#Vysor-優缺" class="headerlink" title="Vysor 優缺"></a>Vysor 優缺</h2><ul>
+<li>優點<ul>
+<li>支援同時投影多個設備，方便進行分割視窗操作</li>
+<li>跨平台支援，適用於多種作業系統</li>
+</ul>
+</li>
+<li>缺點<ul>
+<li>免費版畫質較差</li>
+</ul>
+</li>
+</ul>
+<h1 id="Android-Studio-Device-Mirroring"><a href="#Android-Studio-Device-Mirroring" class="headerlink" title="Android Studio-Device Mirroring"></a>Android Studio-Device Mirroring</h1><p>您可以在 Android Studio 的「Running Devices」視窗中，為實體裝置建立鏡像。只要將裝置的畫面直接串流至 Android Studio，即可利用 Studio IDE 本身執行常用操作，例如啟動應用程式並與其互動、旋轉螢幕、折疊及展開手機，以及調整音量。</p>
+<h2 id="Device-Mirroring-使用步驟"><a href="#Device-Mirroring-使用步驟" class="headerlink" title="Device Mirroring 使用步驟"></a>Device Mirroring 使用步驟</h2><ol>
+<li>Android 手機開啟偵錯模式</li>
+<li>將手機連接到電腦</li>
+<li>在 Android Studio 中，打開側邊工具列，選擇 “Running Devices”</li>
+<li>上方的「+」按鈕，可以選擇要投影的裝置<br><img src="/2024/09/15/Demo-01-%E6%89%8B%E6%A9%9F%E6%8A%95%E5%BD%B1%E5%B7%A5%E5%85%B7-Vyson-Device-Monitor/DeviceMirroring.png" alt="Device Mirroring"></li>
+</ol>
+<h2 id="Device-Mirroring-優缺"><a href="#Device-Mirroring-優缺" class="headerlink" title="Device Mirroring 優缺"></a>Device Mirroring 優缺</h2><ul>
+<li>優點<ul>
+<li>畫質清晰</li>
+<li>與 Android Studio 緊密集成，適合開發者使用</li>
+</ul>
+</li>
+<li>缺點<ul>
+<li>雖然可以將 Tools 視窗獨立顯示，但同時顯示多個設備的鏡像時不如 Vysor 方便。</li>
+</ul>
+</li>
+</ul>
+<h1 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h1><p>在開發 UI 的階段，為了同時觀察深色、淺色的配置，我通常會將兩個設備同時投影到螢幕上。由於這個階段主要重點是顏色配置而非畫質，Vysor 更適合進行分割視窗操作，因此在這種情況下我會選擇 Vysor。</p>
+<p>在電腦有安裝 Android Studio 的情況下，若有會議投影需求，基於畫質考量，我會優先選擇 Device Mirroring。</p>
+<p>總之，Vysor 和 Android Studio 的 Device Mirroring 功能都能將 Android 手機螢幕投影到電腦，建議依據使用情境，挑選合適工具。</p>
+<h1 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h1><ul>
+<li>Vysor: <a target="_blank" rel="noopener" href="https://www.vysor.io/">https://www.vysor.io/</a></li>
+<li>裝置鏡像功能: <a target="_blank" rel="noopener" href="https://developer.android.com/studio/run/device?hl=zh-tw#device-mirroring">https://developer.android.com/studio/run/device?hl=zh-tw#device-mirroring</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/16th%E9%90%B5%E4%BA%BA%E8%B3%BD/" rel="tag"># 16th鐵人賽</a>
+              <a href="/tags/Android-Studio/" rel="tag"># Android Studio</a>
+              <a href="/tags/Vysor/" rel="tag"># Vysor</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/14/%E7%89%88%E6%9C%AC%E6%8E%A7%E7%AE%A1-03-%E4%BD%BF%E7%94%A8Merge%E5%92%8CRebase%E5%90%88%E4%BD%B5%E7%9A%84%E5%B7%AE%E7%95%B0/" rel="prev" title="[版本控管] 03-使用 Merge 和 Rebase 合併的差異">
+                  <i class="fa fa-chevron-left"></i> [版本控管] 03-使用 Merge 和 Rebase 合併的差異
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dreambo4</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-app.js" integrity="sha256-3hdiTmkDsofqAYaeI/xZx6N7xYgnG+aXWangXu+jtCg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@8.6.8/firebase-firestore.js" integrity="sha256-Itvsoir8vLRlK5Xg9Mz8vQqzJ6gVmc5GQ27rNTOZSOY=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBdSgNvxB5djK3mlPoLPpv06HF_nc3FEaY","projectId":"dreambo4-github-io"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"dreambo4/dreambo4.github.io","issue_term":"pathname","theme":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
